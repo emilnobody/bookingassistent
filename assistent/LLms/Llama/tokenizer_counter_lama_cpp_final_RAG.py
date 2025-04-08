@@ -124,9 +124,9 @@ def time_proofreader(state: MessagesState):
     # lade Prompt für
     profreader_prompt_time = (
         "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-        "The knwoledge for german time expressions are:\n\n"
+        "The knowledge for german time expressions are:\n\n"
         f"{prompt_time_knowledge}\n\n"
-        "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical expression of time.\n\n"
+        "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
         "**Rules:**\n"
         "1. Response ONLY the corrected user question without any explanations or additional text.\n"
         "2. Output MUST be a single sentence identical to the original, except for corrected expressions of time.\n"
@@ -165,7 +165,7 @@ def date_proofreader(state: MessagesState):
     # Daten aus de Tabelle holen für die entsprechenden formation
     profreader_prompt_date = (
         "You are a German meticulous 'Proofreading Expert' the expressions of dates.\n\n"
-        "The knwoledge for wich year we have:\n\n"
+        "The knowledge for wich year we have:\n\n"
         f"{jahr_string}\n\n"
         "Your task is to check the Mesage for incomplete or informal expressions of a certain date and replace them with the offical ISO 8601 date format .\n\n"
         "**Rules:**\n"
@@ -226,17 +226,18 @@ query_profread = "Ist der Bus frei von Westerham - KiWest - KiWest am 17.04 nach
 # query = "hallo ich würde gerne am 24.03.25 von Thal nach Schnaitt, ist der bus von 10:15 uhr verfügbar"
 # query = "Ist der Bus frei von Westerham - KiWest - KiWest am 17.04 nach Oberreit - Kirche um 15:30?"
 workflow = StateGraph(state_schema=MessagesState)
-# workflow.add_node("stations", station_proofread)
-# workflow.add_node("time", time_proofreader)
+workflow.add_node("time", time_proofreader)
+workflow.add_node("stations", station_proofread)
 workflow.add_node("date", date_proofreader)
-# workflow.add_node("json", extracting_json)
+workflow.add_node("json", extracting_json)
 #Die Pipeline
-workflow.add_edge(START, "date")
+workflow.add_edge(START, "time")
 # workflow.add_edge(START, "stations")
+workflow.add_edge("time", "stations")
+workflow.add_edge("stations", "date")
+workflow.add_edge("date", "json")
+workflow.add_edge("json", END)
 # workflow.add_edge("stations", "time")
-# workflow.add_edge("time", "date")
-# workflow.add_edge("date", "json")
-# workflow.add_edge("json", END)
 
 memory = MemorySaver()
 app = workflow.compile(checkpointer=memory)
