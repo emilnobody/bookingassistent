@@ -22,8 +22,8 @@ url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
 # Funktion, die den Text von der Seite extrahiert
 def extract_website_content(url):
     extract_results = tavily_extract.invoke({"urls": [url]})
-    for result in extract_results["results"]:
-        extract = result["raw_content"]
+    # for result in extract_results["results"]:
+    #     extract = result["raw_content"]
     # print("FERTIG")
     return extract_results
 

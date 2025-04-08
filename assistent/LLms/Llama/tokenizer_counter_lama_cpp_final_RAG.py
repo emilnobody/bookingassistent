@@ -1,4 +1,5 @@
 import os, regex, time
+from datetime import datetime
 import multiprocessing
 from langchain_community.chat_models import ChatLlamaCpp
 from langchain_core.messages import (
@@ -63,7 +64,7 @@ from assistent.app.buergerbuss_api.buss_api import get_locations
 
 
 # ÄNDERUNGEN
-def proofread(state: MessagesState):
+def station_proofread(state: MessagesState):
     provided = state["messages"]
     last = state["messages"][-1]
     content = last.content
@@ -156,11 +157,67 @@ def time_proofreader(state: MessagesState):
 
 
 # Datum korrigieren
+def date_proofreader(state: MessagesState):
+    previous = state["messages"]
+    jahr_string = str(datetime.now().year)
+    print(jahr_string)
+    # Datenbank anbindung zur Bus Tabelle
+    # Daten aus de Tabelle holen für die entsprechenden formation
+    profreader_prompt_date = (
+        "You are a German meticulous 'Proofreading Expert' the expressions of dates.\n\n"
+        "The knwoledge for wich year we have:\n\n"
+        f"{jahr_string}\n\n"
+        "Your task is to check the Mesage for incomplete or informal expressions of a certain date and replace them with the offical ISO 8601 date format .\n\n"
+        "**Rules:**\n"
+        "1. Response ONLY the corrected user question without any explanations or additional text.\n"
+        "2. Output MUST be a single sentence identical to the original, except for corrected expressions of date.\n"
+        "3. Always use the ISO 8601 format (YYYY-MM-DD) for all dates.\n"
+    )
+    token_and_infrence_display_llcpp(llm, profreader_prompt_date, jahr_string)
+    # Inference und Run
+    start_time = time.time()
+    response = llm.create_chat_completion(
+        messages=[
+            {"role": "system", "content": profreader_prompt_date},
+            {"role": "user", "content": state["messages"][-1].content},
+        ],
+        max_tokens=2000,
+        temperature=0.7,
+        top_p=0.1,
+        top_k=20,
+    )
+    end_time = time.time()
+    infernce_time = end_time - start_time
+    print(f"This is the infernce_time needed for spellchecking {infernce_time}")
+    response = response["choices"][0]["message"]["content"]
+    return {"messages": response}
 
 
 #
 def extracting_json(state: MessagesState):
     latest_message = state["messages"][-1]
+    extraction_prompt = (
+        "You are a NEE-LLM."
+        "The entities to extract are from, to, date, time."
+        " Your output does not have anny commentary or extra information just the extracted entities key-values,key are from, to, date, time. output should be accepted by json.loads and without markdown-syntax"
+    )
+    token_and_infrence_display_llcpp(llm, extraction_prompt, "")
+    start_time = time.time()
+    response = llm.create_chat_completion(
+        messages=[
+            {"role": "system", "content": extraction_prompt},
+            {"role": "user", "content": state["messages"][-1].content},
+        ],
+        max_tokens=2000,
+        temperature=0.7,
+        top_p=0.1,
+        top_k=20,
+    )
+    end_time = time.time()
+    infernce_time = end_time - start_time
+    print(f"This is the infernce_time needed for spellchecking {infernce_time}")
+    response = response["choices"][0]["message"]["content"]
+    return {"messages": response}
 
 
 # Langraph PART
@@ -169,10 +226,18 @@ query_profread = "Ist der Bus frei von Westerham - KiWest - KiWest am 17.04 nach
 # query = "hallo ich würde gerne am 24.03.25 von Thal nach Schnaitt, ist der bus von 10:15 uhr verfügbar"
 # query = "Ist der Bus frei von Westerham - KiWest - KiWest am 17.04 nach Oberreit - Kirche um 15:30?"
 workflow = StateGraph(state_schema=MessagesState)
-# workflow.add_node("stations2", proofread)
-# workflow.add_edge(START, "stations2")
-workflow.add_node("time", time_proofreader)
-workflow.add_edge(START, "time")
+# workflow.add_node("stations", station_proofread)
+# workflow.add_node("time", time_proofreader)
+workflow.add_node("date", date_proofreader)
+# workflow.add_node("json", extracting_json)
+#Die Pipeline
+workflow.add_edge(START, "date")
+# workflow.add_edge(START, "stations")
+# workflow.add_edge("stations", "time")
+# workflow.add_edge("time", "date")
+# workflow.add_edge("date", "json")
+# workflow.add_edge("json", END)
+
 memory = MemorySaver()
 app = workflow.compile(checkpointer=memory)
 app_start = time.time()
