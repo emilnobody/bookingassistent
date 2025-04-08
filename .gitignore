@@ -1,8 +1,26 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**__pycache__/**/
+*__pycache__/*/
 *.py[cod]
 *$py.class
 
+# LLM model
+LLms/Deepseek/model
+LLms/Llama/model
+LLms/Mistral/model
+LLms/**/model
+LLms/*/model/
+.gitignore
+*pyc
+assistent/
+
+#__pycahe__
+helpers/__pycache__ 
+app/__pycache__
+app/__pycache__/**
+app/buergerbuss_api/__pycache__/**/
+helpers/__pycache__/**/
 
 # C extensions
 *.so
