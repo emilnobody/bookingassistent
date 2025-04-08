@@ -1,0 +1,43 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 1.00, Recall: 1.00, F1-Score: 1.00
+Fehler:
+
+Kategorie: to
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: 'Aschbach' statt 'Aschbach - Staatsstraße' für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+
+Kategorie: date
+Precision: 0.65, Recall: 1.00, F1-Score: 0.79
+Fehler:
+  - FP: 'Dienstag' statt 'kommenden Dienstag' für 'date'
+  - FP: '2023-09-01' statt '1. September' für 'date'
+  - FP: 'Ist Samstag' statt 'Samstag' für 'date'
+  - FP: '2022-09-29' statt '29. September' für 'date'
+  - FP: '2022-09-13' statt '13. September' für 'date'
+  - FP: '2023-08-03' statt '3. August' für 'date'
+  - FP: '2022-11-30' statt '30. November' für 'date'
+
+Kategorie: time
+Precision: 0.35, Recall: 1.00, F1-Score: 0.52
+Fehler:
+  - FP: '08:00' statt '08:00 Uhr' für 'time'
+  - FP: '09:00' statt '09:00 Uhr' für 'time'
+  - FP: '12' statt '12:00 Uhr' für 'time'
+  - FP: '15:30' statt '15:30 Uhr' für 'time'
+  - FP: '12:30' statt '12:30 Uhr' für 'time'
+  - FP: '07:00' statt '07:00 Uhr' für 'time'
+  - FP: '14:30' statt '14:30 Uhr' für 'time'
+  - FP: '16:00' statt '16:00 Uhr' für 'time'
+  - FP: '20:45' statt '20:45 Uhr' für 'time'
+  - FP: '07:15' statt '07:15 Uhr' für 'time'
+  - FP: '10:00' statt '10:00 Uhr' für 'time'
+  - FP: '13:00' statt '13:00 Uhr' für 'time'
+  - FP: '18:30' statt '18:30 Uhr' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.72, Micro-Recall: 1.00, Micro-F1-Score: 0.84
+Macro-Precision: 0.72, Macro-Recall: 1.00, Macro-F1-Score: 0.81

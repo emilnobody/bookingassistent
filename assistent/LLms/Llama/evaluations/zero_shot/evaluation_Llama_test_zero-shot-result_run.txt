@@ -1,0 +1,41 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: 'Samstag' statt 'Olympia Stadium' für 'from'
+  - FP: 'Westerham' statt 'Westerham - Schützen- & Trachtenheim' für 'from'
+
+Kategorie: to
+Precision: 0.80, Recall: 1.00, F1-Score: 0.89
+Fehler:
+  - FP: 'Aschbach' statt 'Aschbach - Staatsstraße' für 'to'
+  - FP: 'Olympia Stadium' statt 'Kudamm' für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FP: 'Schützen- und Trachtenheim' statt 'Unterwertach' für 'to'
+
+Kategorie: date
+Precision: 0.70, Recall: 1.00, F1-Score: 0.82
+Fehler:
+  - FP: 'Freitag' statt 'nächsten Freitag' für 'date'
+  - FP: '2023-09-01' statt '1. September' für 'date'
+  - FP: 'viertel nach neun' statt 'Samstag' für 'date'
+  - FP: '15.03' statt '15. März' für 'date'
+  - FP: '2023-07' statt '10. Juli' für 'date'
+  - FP: '2024-01-22' statt '22. Januar' für 'date'
+
+Kategorie: time
+Precision: 0.60, Recall: 1.00, F1-Score: 0.75
+Fehler:
+  - FP: '09:00' statt '09:00 Uhr' für 'time'
+  - FP: '12' statt '12:00 Uhr' für 'time'
+  - FP: 'ich muss vom Hertha Spiel zum Kudamm' statt 'viertel nach neun' für 'time'
+  - FP: '14:30' statt '14:30 Uhr' für 'time'
+  - FP: '16:00' statt '16:00 Uhr' für 'time'
+  - FP: '20:45' statt '20:45 Uhr' für 'time'
+  - FP: '07:15' statt '07:15 Uhr' für 'time'
+  - FP: '15:45' statt '15:45 Uhr' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.75, Micro-Recall: 1.00, Micro-F1-Score: 0.86
+Macro-Precision: 0.75, Macro-Recall: 1.00, Macro-F1-Score: 0.85

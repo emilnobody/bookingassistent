@@ -1,0 +1,9 @@
+Die Gesamtzahl der Tokens für die Liste ist: 905
+Die Gesamtzahl der Tokens für die Liste ist: 783
+Die Gesamtzahl der Tokens für des Prompts ist: 930
+This is the infernce_time needed for spellchecking
+7.401346206665039 Sekunden
+Ist der Bus frei von Westerham - KiWest am 17.04 nach Oberreit - Kirche um 15:30?
+
+#Query
+query_profread = "Ist der Bus frei von Westerham - KiWest - KiWest am 17.04 nach Oberreit - Kirche um 15:30?"

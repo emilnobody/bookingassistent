@@ -1,0 +1,46 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.80, Recall: 1.00, F1-Score: 0.89
+Fehler:
+  - FP: 'Samstag' statt 'Olympia Stadium' für 'from'
+  - FP: 'Rintheimer Straße 69, 10243 Berlin' statt 'Rintheimer Straße 69' für 'from'
+  - FP: 'Westerham' statt 'Westerham - Schützen- & Trachtenheim' für 'from'
+  - FP: 'Lübeck, Marktplatz' statt 'Marktplatz Lübeck' für 'from'
+
+Kategorie: to
+Precision: 0.80, Recall: 1.00, F1-Score: 0.89
+Fehler:
+  - FP: 'Olympiastadion' statt 'Kudamm' für 'to'
+  - FP: 'Percha - Golfclub, 20311 Berlin' statt 'Percha - Golfclub' für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FP: 'Schützen- und Trachtenheim' statt 'Unterwertach' für 'to'
+
+Kategorie: date
+Precision: 0.20, Recall: 1.00, F1-Score: 0.33
+Fehler:
+  - FP: '2024-07-26' statt 'kommenden Dienstag' für 'date'
+  - FP: '2023-09-01' statt '2025-09-01' für 'date'
+  - FP: '2024-01-15' statt 'am Montag' für 'date'
+  - FP: '2024-09-20' statt 'am Montag' für 'date'
+  - FP: '2023-09-18' statt '2025-09-18' für 'date'
+  - FP: '2023-09-29' statt '2025-09-29' für 'date'
+  - FP: '2022-10-22' statt '2025-10-22' für 'date'
+  - FP: '2023-09-13' statt '2025-09-13' für 'date'
+  - FP: '2023-03-15' statt '2025-03-15' für 'date'
+  - FP: '2023-07-10' statt '2025-07-10' für 'date'
+  - FP: '2023-12-25' statt '2025-12-25' für 'date'
+  - FP: '2024-04-30' statt '2025-04-30' für 'date'
+  - FP: '18. Juni' statt '2025-06-18' für 'date'
+  - FP: '2023-08-03' statt '2025-08-03' für 'date'
+  - FP: '2023-01-22' statt '2025-01-22' für 'date'
+  - FP: '2026-11-30' statt '2025-11-30' für 'date'
+
+Kategorie: time
+Precision: 0.95, Recall: 1.00, F1-Score: 0.97
+Fehler:
+  - FP: '09:00' statt '12:00' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.69, Micro-Recall: 1.00, Micro-F1-Score: 0.81
+Macro-Precision: 0.69, Macro-Recall: 1.00, Macro-F1-Score: 0.77

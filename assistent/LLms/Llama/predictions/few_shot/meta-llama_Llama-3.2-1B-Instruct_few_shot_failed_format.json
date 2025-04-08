@@ -1,0 +1,6 @@
+[
+    {
+        "query": "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+        "failed_format": "```json\n{\n    \"from\": \"Elendskirchen\",\n    \"to\": \"Westerham\",\n    \"date\": \"2025-10-15\",\n    \"time\": \"16:00\"\n}\n```"
+    }
+]

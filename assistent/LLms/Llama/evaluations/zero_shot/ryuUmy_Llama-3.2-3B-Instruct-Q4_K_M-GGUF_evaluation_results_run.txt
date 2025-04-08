@@ -1,0 +1,33 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: 'Samstag' statt 'Olympia Stadium' für 'from'
+  - FP: 'Westerham' statt 'Westerham - Schützen- & Trachtenheim' für 'from'
+
+Kategorie: to
+Precision: 0.80, Recall: 1.00, F1-Score: 0.89
+Fehler:
+  - FP: 'Marienstraìe' statt 'Marienstraße' für 'to'
+  - FP: 'Krogling' statt 'Krögling' für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FP: 'Schütz- & Trachtenheim' statt 'Unterwertach' für 'to'
+
+Kategorie: date
+Precision: 0.80, Recall: 1.00, F1-Score: 0.89
+Fehler:
+  - FP: '2024-07-30' statt 'kommenden Dienstag' für 'date'
+  - FP: 'Freitag' statt 'nächsten Freitag' für 'date'
+  - FP: '' statt 'Samstag' für 'date'
+  - FP: '2024-08-03' statt '3. August' für 'date'
+
+Kategorie: time
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: '08:00:00' statt '08:00 Uhr' für 'time'
+  - FP: '12 am' statt '12:00 Uhr' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.85, Micro-Recall: 1.00, Micro-F1-Score: 0.92
+Macro-Precision: 0.85, Macro-Recall: 1.00, Macro-F1-Score: 0.92

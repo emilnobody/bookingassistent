@@ -1,0 +1,55 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.89, Recall: 0.89, F1-Score: 0.89
+Fehler:
+  - FN: 'München' nicht extrahiert für 'from'
+  - FP: 'Hertha' statt 'Olympia Stadium' für 'from'
+  - FP: 'Bürgerbus' statt 'Percha - Golfclub' für 'from'
+  - FN: 'Bremen Rathaus' nicht extrahiert für 'from'
+
+Kategorie: to
+Precision: 0.83, Recall: 0.88, F1-Score: 0.86
+Fehler:
+  - FN: 'Berlin' nicht extrahiert für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FP: 'Größhöhenrain - Schule' statt 'Großhöhenrain - Schule' für 'to'
+  - FN: 'HafenCity Hamburg' nicht extrahiert für 'to'
+  - FP: 'München Marienplatz' statt 'Münchner Marienplatz' für 'to'
+
+Kategorie: date
+Precision: 0.39, Recall: 0.78, F1-Score: 0.52
+Fehler:
+  - FP: 'none' statt '2025-09-05' für 'date'
+  - FP: 'Freitag' statt '2025-09-08' für 'date'
+  - FP: '1. September' statt '2025-09-01' für 'date'
+  - FN: 'am Montag' nicht extrahiert für 'date'
+  - FP: 'Samstag' statt 'am Montag' für 'date'
+  - FP: '18. September' statt '2025-09-18' für 'date'
+  - FP: '15. Oktober' statt '2025-10-15' für 'date'
+  - FP: '29. September' statt '2025-09-29' für 'date'
+  - FP: '2023-10-22' statt '2025-10-22' für 'date'
+  - FP: '2023-09-13' statt '2025-09-13' für 'date'
+  - FN: '12. Oktober' nicht extrahiert für 'date'
+  - FP: '2023-08-03' statt '3. August' für 'date'
+  - FP: '5' statt '5. Mai' für 'date'
+
+Kategorie: time
+Precision: 0.44, Recall: 0.80, F1-Score: 0.57
+Fehler:
+  - FP: '09:00 Uhr' statt '09:00' für 'time'
+  - FN: '12:00' nicht extrahiert für 'time'
+  - FP: 'viertel nach neun' statt '12:00' für 'time'
+  - FP: '15:30 Uhr' statt '15:30' für 'time'
+  - FP: '16:00 Uhr' statt '16:00' für 'time'
+  - FP: '12:30 Uhr' statt '12:30' für 'time'
+  - FP: '16:00 Uhr' statt '16:00' für 'time'
+  - FP: '08:00 Uhr' statt '08:00' für 'time'
+  - FP: '20:45 Uhr' statt '20:45' für 'time'
+  - FP: '07:15 Uhr' statt '07:15' für 'time'
+  - FN: '11:30' nicht extrahiert für 'time'
+  - FP: '15:45 Uhr' statt '15:45' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.64, Micro-Recall: 0.85, Micro-F1-Score: 0.73
+Macro-Precision: 0.64, Macro-Recall: 0.84, Macro-F1-Score: 0.71

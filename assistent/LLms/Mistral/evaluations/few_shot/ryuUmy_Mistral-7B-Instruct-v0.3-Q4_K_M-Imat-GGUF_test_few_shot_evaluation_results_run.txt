@@ -1,0 +1,27 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.95, Recall: 1.00, F1-Score: 0.97
+Fehler:
+  - FP: 'Hertha Spiel' statt 'Olympia Stadium' für 'from'
+
+Kategorie: to
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FP: 'Underwertach' statt 'Unterwertach' für 'to'
+
+Kategorie: date
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: 'am kommenden Dienstag' statt 'kommenden Dienstag' für 'date'
+  - FP: 'am Samstag' statt 'am Montag' für 'date'
+
+Kategorie: time
+Precision: 0.95, Recall: 1.00, F1-Score: 0.97
+Fehler:
+  - FP: '21:45' statt '12:00' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.93, Micro-Recall: 1.00, Micro-F1-Score: 0.96
+Macro-Precision: 0.93, Macro-Recall: 1.00, Macro-F1-Score: 0.96

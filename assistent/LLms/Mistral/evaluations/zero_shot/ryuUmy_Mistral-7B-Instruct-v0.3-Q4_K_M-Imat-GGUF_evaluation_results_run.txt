@@ -1,0 +1,37 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 1.00, Recall: 1.00, F1-Score: 1.00
+Fehler:
+
+Kategorie: to
+Precision: 0.95, Recall: 1.00, F1-Score: 0.97
+Fehler:
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+
+Kategorie: date
+Precision: 0.60, Recall: 1.00, F1-Score: 0.75
+Fehler:
+  - FP: 'Dienstag' statt 'kommenden Dienstag' für 'date'
+  - FP: '2022-09-01' statt '1. September' für 'date'
+  - FP: 'Ist Samstag' statt 'Samstag' für 'date'
+  - FP: '2022-09-29' statt '29. September' für 'date'
+  - FP: '2023-03-15' statt '15. März' für 'date'
+  - FP: '2023-04-30' statt '30. April' für 'date'
+  - FP: '2023-08-03' statt '3. August' für 'date'
+  - FP: '2023-05-05' statt '5. Mai' für 'date'
+
+Kategorie: time
+Precision: 0.65, Recall: 1.00, F1-Score: 0.79
+Fehler:
+  - FP: '09:00' statt '09:00 Uhr' für 'time'
+  - FP: '12:00' statt '12:00 Uhr' für 'time'
+  - FP: '12:30' statt '12:30 Uhr' für 'time'
+  - FP: '14:30' statt '14:30 Uhr' für 'time'
+  - FP: '20:45' statt '20:45 Uhr' für 'time'
+  - FP: '10:00' statt '10:00 Uhr' für 'time'
+  - FP: '13:00' statt '13:00 Uhr' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.80, Micro-Recall: 1.00, Micro-F1-Score: 0.89
+Macro-Precision: 0.80, Macro-Recall: 1.00, Macro-F1-Score: 0.88

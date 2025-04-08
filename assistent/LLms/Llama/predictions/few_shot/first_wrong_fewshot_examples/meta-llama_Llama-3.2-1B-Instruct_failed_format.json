@@ -1,0 +1,10 @@
+[
+    {
+        "query": "Kann ich den Bürgerbus für eine Fahrt von Jägerstraße nach Krögling um 09:00 Uhr am 1. September buchen?",
+        "failed_format": "{\"from\": \"J\\u00aegerstra\\u00f8\", \"to\": \"Kr\\u00fögling\", \"date\": \"01. September\", \"time\": \"09:00\"}"
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+        "failed_format": "{\"from\": \"Elendskirchen\", \"to\": \"Westerham\", \"date\": \"15. Oktober\", \"time\": \"16:00\", \"bus\": \"Mitfahrbankerl Edeka Maruhn\"}}"
+    }
+]

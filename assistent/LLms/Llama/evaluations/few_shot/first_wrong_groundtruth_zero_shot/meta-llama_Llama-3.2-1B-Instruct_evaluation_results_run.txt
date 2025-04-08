@@ -1,0 +1,44 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.79, Recall: 0.94, F1-Score: 0.86
+Fehler:
+  - FP: 'Hertha' statt 'Olympia Stadium' für 'from'
+  - FN: 'Elendskirchen' nicht extrahiert für 'from'
+  - FP: 'Westerham' statt 'Westerham - Schützen- & Trachtenheim' für 'from'
+  - FP: 'Aschbach' statt 'Aschbach - Staatsstraße' für 'from'
+  - FP: 'Lübeck' statt 'Marktplatz Lübeck' für 'from'
+
+Kategorie: to
+Precision: 0.89, Recall: 0.94, F1-Score: 0.92
+Fehler:
+  - FP: 'Olympiastadion' statt 'Kudamm' für 'to'
+  - FN: 'Westerham - Mitfahrbankerl Edeka Maruhn' nicht extrahiert für 'to'
+  - FP: 'Schützenheim' statt 'Unterwertach' für 'to'
+
+Kategorie: date
+Precision: 0.37, Recall: 0.88, F1-Score: 0.52
+Fehler:
+  - FP: '2025-02-15' statt '2025-09-05' für 'date'
+  - FP: 'am nächsten Freitag' statt '2025-09-08' für 'date'
+  - FP: 'Montag' statt 'am Montag' für 'date'
+  - FP: 'am Samstag' statt 'am Montag' für 'date'
+  - FN: '2025-10-15' nicht extrahiert für 'date'
+  - FP: '2024-09-13' statt '2025-09-13' für 'date'
+  - FP: '2025-03-15' statt '15. März' für 'date'
+  - FP: '2025-07-10' statt '10. Juli' für 'date'
+  - FP: '2025-12-25' statt '25. Dezember' für 'date'
+  - FP: '2025-04-30' statt '30. April' für 'date'
+  - FP: '2025-08-03' statt '3. August' für 'date'
+  - FP: '2025-01-22' statt '22. Januar' für 'date'
+  - FP: '2025-05-05' statt '5. Mai' für 'date'
+
+Kategorie: time
+Precision: 0.95, Recall: 0.95, F1-Score: 0.95
+Fehler:
+  - FP: '14:30' statt '12:00' für 'time'
+  - FN: '16:00' nicht extrahiert für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.75, Micro-Recall: 0.93, Micro-F1-Score: 0.83
+Macro-Precision: 0.75, Macro-Recall: 0.93, Macro-F1-Score: 0.81

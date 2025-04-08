@@ -1,0 +1,6 @@
+[
+    {
+        "query": "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+        "failed_format": "{\"from\": \"Elendskirchen\", \"to\": \"Westerham\", \"date\": \"am 15. Oktober\", \"time\": \"16:00\", \"transportation provider\": \"Edeka Maruhn\", \"vehicle type\": \"Bürgerbus\", \"fare\": \"Edeka Maruhn\", \"passenger capacity\": \"1\", \"vehicle information\": \"Bürgerbus\", \"bus operator\": \"Edeka Maruhn\", \"route\": \"Edeka Maruhn\", \"service type\": \"Bus\", \"fare type\": \"Individual\", \"fare price\": \"Edeka Maruhn\", \"booking reference\": \"Edeka Maruhn\", \"booking status\": \"booked\", \"booking reference number\": \"Edeka Maruhn\", \"booking reference number for customer\": \"Edeka Maruhn\", \"booking reference for customer number\": \"Edeka Maruhn\", \"booking reference for customer email\": \"Edeka Maruhn\", \"booking reference for customer phone\": \"Edeka Maruhn\", \"booking reference for customer address\": \"Edeka Maruhn\", \"booking reference for customer name\": \"Edeka Maruhn\", \"booking reference for customer email\": \"Edeka Mar"
+    }
+]

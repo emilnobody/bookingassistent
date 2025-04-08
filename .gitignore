@@ -13,7 +13,7 @@ LLms/**/model
 LLms/*/model/
 .gitignore
 *pyc
-assistent/
+assistent/__pycache__
 
 #__pycahe__
 helpers/__pycache__ 

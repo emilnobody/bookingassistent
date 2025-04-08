@@ -1,0 +1,37 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.85, Recall: 1.00, F1-Score: 0.92
+Fehler:
+  - FP: 'Westerham - Schütz- & Trachtenheim' statt 'Westerham - Schützen- & Trachtenheim' für 'from'
+  - FP: 'Aschbach - Staatsstraè' statt 'Aschbach - Staatsstraße' für 'from'
+  - FP: 'Hauptstraèe' statt 'Hauptstraße' für 'from'
+
+Kategorie: to
+Precision: 0.80, Recall: 1.00, F1-Score: 0.89
+Fehler:
+  - FP: 'Marienstraìe' statt 'Marienstraße' für 'to'
+  - FP: 'Hertha Spiel' statt 'Kudamm' für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FP: 'GroßtÖhöhain - Schule' statt 'Großhöhenrain - Schule' für 'to'
+
+Kategorie: date
+Precision: 0.65, Recall: 1.00, F1-Score: 0.79
+Fehler:
+  - FP: '2025-02-04' statt 'kommenden Dienstag' für 'date'
+  - FP: 'Montag' statt 'am Montag' für 'date'
+  - FP: 'Samstag' statt 'am Montag' für 'date'
+  - FP: '2024-09-13' statt '2025-09-13' für 'date'
+  - FP: '2024-07-10' statt '2025-07-10' für 'date'
+  - FP: '2024-12-25' statt '2025-12-25' für 'date'
+  - FP: '2024-10-12' statt '2025-10-12' für 'date'
+
+Kategorie: time
+Precision: 0.90, Recall: 1.00, F1-Score: 0.95
+Fehler:
+  - FP: '07:45 Uhr' statt '07:45' für 'time'
+  - FP: 'viertel nach neun' statt '12:00' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.80, Micro-Recall: 1.00, Micro-F1-Score: 0.89
+Macro-Precision: 0.80, Macro-Recall: 1.00, Macro-F1-Score: 0.89
