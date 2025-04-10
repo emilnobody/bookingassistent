@@ -183,6 +183,39 @@ def extracting_json(state: MessagesState, llm):
     return {"messages": response}
 
 
+def build_pipeline_stages(stages: list[str], llm):
+    """
+    Dynamisch einen LangGraph-Workflow mit angegebenen Stages bauen.
+
+    :param stages: Liste von Stages, z.B. ["time", "date", "json"]
+    :param llm: Das verwendete LLM
+    :return: Kompilierte App
+    """
+    # Map von Namen zu Funktionen (mit LLM partial)
+    stage_funcs = {
+        "station": partial(station_proofread, llm=llm),
+        "time": partial(time_proofreader, llm=llm),
+        "date": partial(date_proofreader, llm=llm),
+        "json": partial(extracting_json, llm=llm),
+        # Optional: station, weekday, leicht erweiterbar
+    }
+
+    workflow = StateGraph(state_schema=MessagesState)
+
+    # Nodes hinzufügen
+    for stage in stages:
+        workflow.add_node(stage, stage_funcs[stage])
+
+    # Edges definieren
+    workflow.add_edge(START, stages[0])
+    for i in range(len(stages) - 1):
+        workflow.add_edge(stages[i], stages[i + 1])
+    workflow.add_edge(stages[-1], END)
+
+    memory = MemorySaver()
+    return workflow.compile(checkpointer=memory)
+
+
 def run_pipline(query_profread: str, llm):
     # Neue Funktion, die automatisch llm befüllt
     time_proofreader_with_llm = partial(time_proofreader, llm=llm)
@@ -249,5 +282,73 @@ def run_pipline_synth(query_profread: str, llm):
     app_end = time.time()
     app_infernce = app_end - app_start
     print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
+def run_pipline_synth_time(query_profread: str, llm):
+    # Neue Funktion, die automatisch llm befüllt
+    time_proofreader_with_llm = partial(time_proofreader, llm=llm)
+    extracting_json_with_llm = partial(extracting_json, llm=llm)
+    print("run")
+    workflow = StateGraph(state_schema=MessagesState)
+    workflow.add_node("time", time_proofreader_with_llm)
+    workflow.add_node("json", extracting_json_with_llm)
+
+    workflow.add_edge(START, "time")
+    workflow.add_edge("time", "json")
+    workflow.add_edge("json", END)
+
+    memory = MemorySaver()
+    app = workflow.compile(checkpointer=memory)
+    app_start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "333"}},
+    )
+    app_end = time.time()
+    app_infernce = app_end - app_start
+    print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
+def run_pipline_synth_date(query_profread: str, llm):
+    # Neue Funktion, die automatisch llm befüllt
+    date_proofreader_with_llm = partial(date_proofreader, llm=llm)
+    extracting_json_with_llm = partial(extracting_json, llm=llm)
+    print("run")
+    workflow = StateGraph(state_schema=MessagesState)
+    workflow.add_node("date", date_proofreader_with_llm)
+    workflow.add_node("json", extracting_json_with_llm)
+
+    workflow.add_edge(START, "date")
+    workflow.add_edge("date", "json")
+    workflow.add_edge("json", END)
+
+    memory = MemorySaver()
+    app = workflow.compile(checkpointer=memory)
+    app_start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "333"}},
+    )
+    app_end = time.time()
+    app_infernce = app_end - app_start
+    print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
+def run_pipeline(query_profread: str, llm, stages: list[str]):
+    app = build_pipeline_stages(stages, llm)
+    start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "333"}},
+    )
+    end = time.time()
+    duration = end - start
+    print(f"Inferenzzeit: {duration:.2f} Sekunden")
     print(response)
     return response
