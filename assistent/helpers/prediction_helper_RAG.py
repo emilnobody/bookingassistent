@@ -6,7 +6,7 @@ from assistent.helpers.regularExpression import (
     extract_text_after_think,
 )
 from assistent.helpers.model_downloader import get_repo_model, get_model_id
-from assistent.helpers.pipline_helper import run_pipline,run_pipline_synth
+from assistent.helpers.pipline_helper import run_pipeline
 import assistent.config as config
 
 # from langchain.schema import AIMessage
@@ -17,6 +17,7 @@ from langchain_core.messages import (
     RemoveMessage,
 )
 from llama_cpp import Llama
+
 # model_id = get_model_id("deepseek_imatrix")
 # model_id_cleaned = model_id.replace("/", "_")
 # Container für Predictions
@@ -66,40 +67,43 @@ def get_prediction_folder_path(model_folder):
     return folder
 
 
-def create_prediction_file_path(llm_prediction_folder, model_key, shot):
+def create_prediction_file_path(llm_prediction_folder, model_key, shot, filename):
     """Erstellt den Pfad für die Predictions"""
     model_id_cleaned = clean_model_id(model_key)
     if shot == "few":
-        predictions_file = (
-            f"{llm_prediction_folder}/{model_id_cleaned}_few_shot_predictions.json"
-        )
+        predictions_file = f"{llm_prediction_folder}/{model_id_cleaned}_few_shot_predictions_{filename}"
         return predictions_file
-    predictions_file = f"{llm_prediction_folder}/{model_id_cleaned}_predictions.json"
+    predictions_file = (
+        f"{llm_prediction_folder}/{model_id_cleaned}_predictions_{filename}"
+    )
     return predictions_file
 
 
-def create_failed_format_file_path(llm_prediction_folder, model_key, shot):
+def create_failed_format_file_path(llm_prediction_folder, model_key, shot, filename):
     """Erstelle den Pafad für die Fehler"""
     model_id_cleaned = clean_model_id(model_key)
     if shot == "few":
         fail_for_file = os.path.normpath(
             os.path.join(
-                llm_prediction_folder, f"{model_id_cleaned}_few_shot_failed_format.json"
+                llm_prediction_folder,
+                f"{model_id_cleaned}_few_shot_failed_format_{filename}",
             )
         )
         return fail_for_file
 
     fail_for_file = os.path.normpath(
-        os.path.join(llm_prediction_folder, f"{model_id_cleaned}_failed_format.json")
+        os.path.join(
+            llm_prediction_folder, f"{model_id_cleaned}_failed_format_{filename}"
+        )
     )
     return fail_for_file
 
 
-def create_reasoning_file_path(llm_prediction_folder, model_key):
+def create_reasoning_file_path(llm_prediction_folder, model_key, filename):
     """Erstellt den Pfad für die Reasoning-Inhalte"""
     model_id_cleaned = clean_model_id(model_key)
     reasoning_file = os.path.normpath(
-        os.path.join(llm_prediction_folder, f"{model_id_cleaned}_reasoning.json")
+        os.path.join(llm_prediction_folder, f"{model_id_cleaned}_reasoning_{filename}")
     )
     return reasoning_file
 
@@ -202,47 +206,85 @@ def run_predictions(ground_truth_data, llm_prediction_folder, modelkey, app):
             f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
         )
 
-def run_rag_predictions(ground_truth_data, llm_prediction_folder, modelkey,llm):
-    #Ordner für die Ergebnisse zuweisen
-    shot="zero_rag"
+
+def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm):
+    # Ordner für die Ergebnisse zuweisen
+    shot = "zero_rag"
+    filename = ground_truth_file[0]
+
     failed_format_file = create_failed_format_file_path(
-        llm_prediction_folder, modelkey, shot
+        llm_prediction_folder, modelkey, shot, filename
     )
     predictions_file = create_prediction_file_path(
-        llm_prediction_folder, modelkey, shot
+        llm_prediction_folder, modelkey, shot, filename
     )
+    reasoning_file = create_reasoning_file_path(
+        llm_prediction_folder, modelkey, filename
+    )
+    
+    # Enthält die query daten Query- und Entitäten-Json
+    ground_truth_data = ground_truth_file[1]
     for entry in ground_truth_data:
         query = entry["query"]
         # outputs=run_pipline(query,llm)
-        outputs=run_pipline_synth(query,llm)
-        generated_text = outputs
-        print(generated_text)
-    #      try:
-    #         extracted_json = json.loads(generated_text)
-    #         print(extracted_json)  # Gibt das JSON-Objekt aus
-    #     except (json.JSONDecodeError, KeyError, IndexError):
-    #         print("Das Modell hat kein gültiges JSON erzeugt:")
-    #         print(generated_text)
-    #         failed_format.append({"query": query, "failed_format": generated_text})
-    #         # with open(failed_format_file, "w", encoding="utf-8") as file:
-    #         with open(failed_format_file, "w", encoding="utf-8") as file:
-    #             json.dump(failed_format, file, indent=4, ensure_ascii=False)
-    #         try:
-    #             extracted_entities = extract_entities_from_text(generated_text)
-    #             jTypExtracted = json.dumps(extracted_entities)
-    #             extracted_json = json.loads(jTypExtracted)
-    #         except (json.JSONDecodeError, KeyError, IndexError):
-    #             extracted_json = {"from": None, "to": None, "date": None, "time": None}
-    #     # Speichere Prediction mit originaler Query
-    #     predictions.append({"query": query, "entitys": extracted_json})
-    # # Speichern der Predictions Inhalte
-    # with open(predictions_file, "w", encoding="utf-8") as file:
-    #     json.dump(predictions, file, indent=4, ensure_ascii=False)
-    # print(f"Predictions wurden erfolgreich in '{predictions_file}' gespeichert.")
-    # if "deepseek" in modelkey:
-    #     # Speichern der Reasoning Inhalte
-    #     with open(reasoning_file, "w", encoding="utf-8") as file:
-    #         json.dump(reasoning_contents, file, indent=4, ensure_ascii=False)
-    #     print(
-    #         f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
-        # )
+        # outputs=run_pipline_synth(query,llm)
+        station_output = run_pipeline(query, llm, ["station", "json"])
+        outputs_time = run_pipeline(query, llm, ["time", "json"])
+        outputs_date = run_pipeline(query, llm, ["date", "json"])
+        outputs_time_date = run_pipeline(query, llm, ["time", "date", "json"])
+        outputs_all = run_pipeline(query, llm, ["station", "time", "date", "json"])
+        outputs = [
+            station_output,
+            outputs_time,
+            outputs_date,
+            outputs_time_date,
+            outputs_all,
+        ]
+        for output in outputs:
+            print(output)
+            generated_text = output
+            try:
+                extracted_json = json.loads(generated_text)
+                print(extracted_json)  # Gibt das JSON-Objekt aus
+            except (json.JSONDecodeError, KeyError, IndexError):
+                print("Das Modell hat kein gültiges JSON erzeugt:")
+                print(generated_text)
+                failed_format.append({"query": query, "failed_format": generated_text})
+                # with open(failed_format_file, "w", encoding="utf-8") as file:
+                with open(failed_format_file, "w", encoding="utf-8") as file:
+                    json.dump(failed_format, file, indent=4, ensure_ascii=False)
+                try:
+                    extracted_entities = extract_entities_from_text(generated_text)
+                    jTypExtracted = json.dumps(extracted_entities)
+                    extracted_json = json.loads(jTypExtracted)
+                except (json.JSONDecodeError, KeyError, IndexError):
+                    extracted_json = {
+                        "from": None,
+                        "to": None,
+                        "date": None,
+                        "time": None,
+                    }
+            # Speichere Prediction mit originaler Query
+            predictions.append({"query": query, "entitys": extracted_json})
+        # Speichern der Predictions Inhalte
+        with open(predictions_file, "w", encoding="utf-8") as file:
+            json.dump(predictions, file, indent=4, ensure_ascii=False)
+        print(f"Predictions wurden erfolgreich in '{predictions_file}' gespeichert.")
+        if "deepseek" in modelkey:
+            # Speichern der Reasoning Inhalte
+            with open(reasoning_file, "w", encoding="utf-8") as file:
+                json.dump(reasoning_contents, file, indent=4, ensure_ascii=False)
+            print(
+                f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
+            )
+
+
+def stages_filter(keys: list[str]):
+    # hier kommt der Filter hin
+    for key in keys:
+        outputs = run_pipeline(query, llm, ["station", "json"])
+        outputs = run_pipeline(query, llm, ["time", "json"])
+        outputs = run_pipeline(query, llm, ["date", "json"])
+        outputs = run_pipeline(query, llm, ["time", "date", "json"])
+        outputs = run_pipeline(query, llm, ["station", "time", "date", "json"])
+    print("h")
