@@ -162,6 +162,7 @@ def extracting_json(state: MessagesState, llm):
     extraction_prompt = (
         "You are a NEE-LLM."
         "The entities to extract are from, to, date, time."
+        "Your must EXACTLY use these keys: 'from', 'to', 'date', 'time' and not the german word or terms.\n"
         " Your output does not have anny commentary or extra information just the extracted entities key-values,key are from, to, date, time. output should be accepted by json.loads and without markdown-syntax"
     )
     token_and_infrence_display_llcpp(llm, extraction_prompt, "")
