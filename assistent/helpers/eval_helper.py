@@ -1,6 +1,7 @@
 import json
 import os
 
+
 def load_json_file(file_path):
     """
     Lädt eine JSON-Datei und gibt die Daten zurück.
@@ -8,11 +9,23 @@ def load_json_file(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
+
+def load_all_json_files(folder):
+    return [
+        (filename, json.load(open(os.path.join(folder, filename), encoding="utf-8")))
+        for filename in os.listdir(folder)
+        if filename.lower().endswith(".json")
+    ]
+
+
 def get_predictions_path(base_folder, llm_name, filename):
     """
     Gibt den vollständigen Pfad zu einer Predictidateion zurück.
     """
-    return os.path.normpath(os.path.join(base_folder, llm_name, "predictions", filename))
+    return os.path.normpath(
+        os.path.join(base_folder, llm_name, "predictions", filename)
+    )
+
 
 def calculate_metrics(ground_truth, predictions):
     """
@@ -45,6 +58,7 @@ def calculate_metrics(ground_truth, predictions):
 
     return results
 
+
 def compute_micro_macro_metrics(results):
     """
     Berechnet Mikro- und Makro-Metriken und gibt sie zurück.
@@ -53,7 +67,9 @@ def compute_micro_macro_metrics(results):
     total_FP = sum(metrics["FP"] for metrics in results.values())
     total_FN = sum(metrics["FN"] for metrics in results.values())
 
-    micro_precision = total_TP / (total_TP + total_FP) if (total_TP + total_FP) > 0 else 0
+    micro_precision = (
+        total_TP / (total_TP + total_FP) if (total_TP + total_FP) > 0 else 0
+    )
     micro_recall = total_TP / (total_TP + total_FN) if (total_TP + total_FN) > 0 else 0
     micro_f1 = (
         2 * micro_precision * micro_recall / (micro_precision + micro_recall)
@@ -72,7 +88,9 @@ def compute_micro_macro_metrics(results):
         precision = TP / (TP + FP) if (TP + FP) > 0 else 0
         recall = TP / (TP + FN) if (TP + FN) > 0 else 0
         f1 = (
-            2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+            2 * precision * recall / (precision + recall)
+            if (precision + recall) > 0
+            else 0
         )
 
         macro_precision += precision
@@ -88,6 +106,7 @@ def compute_micro_macro_metrics(results):
 
     return micro_metrics, macro_metrics
     # return micro_precision, micro_recall, micro_f1, macro_precision, macro_recall, macro_f1
+
 
 def save_evaluation_results(results, micro_metrics, macro_metrics, output_filename):
     """
@@ -129,6 +148,7 @@ def save_evaluation_results(results, micro_metrics, macro_metrics, output_filena
 
     print(f"Ergebnisse wurden erfolgreich in '{output_filename}' gespeichert.")
 
+
 def main():
     # Definiere Pfade und lade Dateien
     base_folder = os.path.dirname(__file__)
@@ -136,7 +156,9 @@ def main():
     predictions_filename = "meta-llama_Llama-3.2-1B-Instruct_predictions.json"
     ground_truth_filename = "ground_truth.json"
 
-    predictions_file_path = get_predictions_path(base_folder, llm_name, predictions_filename)
+    predictions_file_path = get_predictions_path(
+        base_folder, llm_name, predictions_filename
+    )
     ground_truth_file_path = os.path.join(base_folder, ground_truth_filename)
 
     predictions = load_json_file(predictions_file_path)
@@ -147,6 +169,7 @@ def main():
 
     output_filename = "evaluation_results.txt"
     save_evaluation_results(results, micro_metrics, macro_metrics, output_filename)
+
 
 if __name__ == "__main__":
     main()

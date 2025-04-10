@@ -32,3 +32,13 @@ fail_for_file = os.path.normpath(
 
 #def run_predictions(ground_truth_data, llm_prediction_folder, modelkey, llm):
 run_rag_predictions(ground_truth_data,llm_prediction_folder,model_key,llm)
+#Was will ich zero shot Aufruf und few shot Aufruf diese Aufrufe getrennt 
+# in synthdata und  userdataset also nehmen wir mal an 
+# es gibt die Keys syn und user anhand dieser keys sollen dann die runs  bei :
+# sync mit der liste [time,json] [date,json] [time,date,json]durchgeführt werden 
+# userdata mit der liste[station,json] [time,json] [date,json] [station,time,date,json] durchgeführt werden 
+
+#Optional: userdata mit der 
+# liste[station,json] [station,time,json] [station,date,json] [station,time,date,json] durchgeführt werden 
+# [time,json] [time,date,json]
+# [date,json], 
