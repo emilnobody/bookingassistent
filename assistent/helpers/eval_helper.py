@@ -10,11 +10,11 @@ def load_json_file(file_path):
         return json.load(file)
 
 
-def load_all_json_files_rag(folder):
+def load_all_json_files_rag(folder,key):
     return [
         (filename, json.load(open(os.path.join(folder, filename), encoding="utf-8")))
         for filename in os.listdir(folder)
-        if filename.lower().startswith("testdatensatz-rag-synth")
+        if filename.lower().startswith(f"testdatensatz-rag-{key}")
     ]
 
 def load_all_json_files(folder):

@@ -218,12 +218,13 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
     predictions_file = create_prediction_file_path(
         llm_prediction_folder, modelkey, shot, filename
     )
-    reasoning_file = create_reasoning_file_path(
-        llm_prediction_folder, modelkey, filename
-    )
+    # reasoning_file = create_reasoning_file_path(
+    #     llm_prediction_folder, modelkey, filename
+    # )
     
     # Enthält die query daten Query- und Entitäten-Json
     ground_truth_data = ground_truth_file[1]
+    print(ground_truth_data)
     for entry in ground_truth_data:
         query = entry["query"]
         # outputs=run_pipline(query,llm)
@@ -242,7 +243,7 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
         ]
         for output in outputs:
             print(output)
-            generated_text = output
+            generated_text = output["messages"][-1].content
             try:
                 extracted_json = json.loads(generated_text)
                 print(extracted_json)  # Gibt das JSON-Objekt aus
@@ -270,21 +271,21 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
         with open(predictions_file, "w", encoding="utf-8") as file:
             json.dump(predictions, file, indent=4, ensure_ascii=False)
         print(f"Predictions wurden erfolgreich in '{predictions_file}' gespeichert.")
-        if "deepseek" in modelkey:
-            # Speichern der Reasoning Inhalte
-            with open(reasoning_file, "w", encoding="utf-8") as file:
-                json.dump(reasoning_contents, file, indent=4, ensure_ascii=False)
-            print(
-                f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
-            )
+        # if "deepseek" in modelkey:
+        #     # Speichern der Reasoning Inhalte
+        #     with open(reasoning_file, "w", encoding="utf-8") as file:
+        #         json.dump(reasoning_contents, file, indent=4, ensure_ascii=False)
+        #     print(
+        #         f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
+        #     )
 
 
-def stages_filter(keys: list[str]):
-    # hier kommt der Filter hin
-    for key in keys:
-        outputs = run_pipeline(query, llm, ["station", "json"])
-        outputs = run_pipeline(query, llm, ["time", "json"])
-        outputs = run_pipeline(query, llm, ["date", "json"])
-        outputs = run_pipeline(query, llm, ["time", "date", "json"])
-        outputs = run_pipeline(query, llm, ["station", "time", "date", "json"])
-    print("h")
+# def stages_filter(keys: list[str]):
+#     # hier kommt der Filter hin
+#     for key in keys:
+#         outputs = run_pipeline(query, llm, ["station", "json"])
+#         outputs = run_pipeline(query, llm, ["time", "json"])
+#         outputs = run_pipeline(query, llm, ["date", "json"])
+#         outputs = run_pipeline(query, llm, ["time", "date", "json"])
+#         outputs = run_pipeline(query, llm, ["station", "time", "date", "json"])
+#     print("h")

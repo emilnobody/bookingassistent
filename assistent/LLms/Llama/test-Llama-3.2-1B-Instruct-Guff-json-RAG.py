@@ -13,7 +13,7 @@ model_id = get_model_id(model_key)
 model_id_cleaned = model_id.replace("/", "_")
 llm = get_repo_rag_model(model_key)
 # Bereitgestellte Trainings- und Testdaten laden
-ground_truth_files = load_all_json_files_rag(config.DATASETS_FOLDER)
+ground_truth_files = load_all_json_files_rag(config.DATASETS_FOLDER,"synth")
 
 ground_truth_file = os.path.join(config.DATASETS_FOLDER, "testdatensatz-zero-shot.Json")
 
@@ -32,7 +32,7 @@ llm_prediction_folder = os.path.normpath(
 for groundtruth_file in ground_truth_files:
     print("hi")
     groundtruth_infos= groundtruth_file[1]
-    run_rag_predictions(ground_truth_file,llm_prediction_folder,model_key,llm)
+    run_rag_predictions(groundtruth_file,llm_prediction_folder,model_key,llm)
 
 
 print(llm_prediction_folder)
@@ -43,7 +43,7 @@ fail_for_file = os.path.normpath(
 # Der RAG Teil kommt hier hin
 
 # def run_predictions(ground_truth_data, llm_prediction_folder, modelkey, llm):
-run_rag_predictions(ground_truth_data, llm_prediction_folder, model_key, llm)
+# run_rag_predictions(ground_truth_data, llm_prediction_folder, model_key, llm)
 # Was will ich zero shot Aufruf und few shot Aufruf diese Aufrufe getrennt
 # in synthdata und  userdataset also nehmen wir mal an
 # es gibt die Keys syn und user anhand dieser keys sollen dann die runs  bei :
