@@ -6,6 +6,7 @@ from assistent.helpers.regularExpression import (
     extract_text_after_think,
 )
 from assistent.helpers.model_downloader import get_repo_model, get_model_id
+from assistent.helpers.pipline_helper import run_pipline,run_pipline_synth
 import assistent.config as config
 
 # from langchain.schema import AIMessage
@@ -15,7 +16,7 @@ from langchain_core.messages import (
     SystemMessage,
     RemoveMessage,
 )
-
+from llama_cpp import Llama
 # model_id = get_model_id("deepseek_imatrix")
 # model_id_cleaned = model_id.replace("/", "_")
 # Container für Predictions
@@ -124,12 +125,10 @@ def run_predictions(ground_truth_data, llm_prediction_folder, modelkey, app):
     messages = []
     generated_text = {}
     reasoning_contents = []
-    max_token = 256
     for entry in ground_truth_data:
         query = entry["query"]
         prompt = f"{zero_shot_prompt}\n### \nUser Query: {query}\nKI:"
         if "deepseek" in modelkey:
-            max_token = 521
             messages = [
                 {
                     "role": "user",
@@ -202,3 +201,48 @@ def run_predictions(ground_truth_data, llm_prediction_folder, modelkey, app):
         print(
             f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
         )
+
+def run_rag_predictions(ground_truth_data, llm_prediction_folder, modelkey,llm):
+    #Ordner für die Ergebnisse zuweisen
+    shot="zero_rag"
+    failed_format_file = create_failed_format_file_path(
+        llm_prediction_folder, modelkey, shot
+    )
+    predictions_file = create_prediction_file_path(
+        llm_prediction_folder, modelkey, shot
+    )
+    for entry in ground_truth_data:
+        query = entry["query"]
+        # outputs=run_pipline(query,llm)
+        outputs=run_pipline_synth(query,llm)
+        generated_text = outputs
+        print(generated_text)
+    #      try:
+    #         extracted_json = json.loads(generated_text)
+    #         print(extracted_json)  # Gibt das JSON-Objekt aus
+    #     except (json.JSONDecodeError, KeyError, IndexError):
+    #         print("Das Modell hat kein gültiges JSON erzeugt:")
+    #         print(generated_text)
+    #         failed_format.append({"query": query, "failed_format": generated_text})
+    #         # with open(failed_format_file, "w", encoding="utf-8") as file:
+    #         with open(failed_format_file, "w", encoding="utf-8") as file:
+    #             json.dump(failed_format, file, indent=4, ensure_ascii=False)
+    #         try:
+    #             extracted_entities = extract_entities_from_text(generated_text)
+    #             jTypExtracted = json.dumps(extracted_entities)
+    #             extracted_json = json.loads(jTypExtracted)
+    #         except (json.JSONDecodeError, KeyError, IndexError):
+    #             extracted_json = {"from": None, "to": None, "date": None, "time": None}
+    #     # Speichere Prediction mit originaler Query
+    #     predictions.append({"query": query, "entitys": extracted_json})
+    # # Speichern der Predictions Inhalte
+    # with open(predictions_file, "w", encoding="utf-8") as file:
+    #     json.dump(predictions, file, indent=4, ensure_ascii=False)
+    # print(f"Predictions wurden erfolgreich in '{predictions_file}' gespeichert.")
+    # if "deepseek" in modelkey:
+    #     # Speichern der Reasoning Inhalte
+    #     with open(reasoning_file, "w", encoding="utf-8") as file:
+    #         json.dump(reasoning_contents, file, indent=4, ensure_ascii=False)
+    #     print(
+    #         f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
+        # )

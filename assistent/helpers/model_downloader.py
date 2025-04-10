@@ -1,5 +1,5 @@
 from llama_cpp import Llama
-import os
+import os, multiprocessing
 
 # from config import MODEL_ID, MODEL_FILENAME, ROOT_DIR,LLMS_FOLDER,DEEPSEEK_FOLDER,LLAMA_FOLDER
 import assistent.config as config
@@ -22,8 +22,31 @@ def load_llm_loacal(model_id, model_folder, model_filename):
     )
     return llm
 
-def load_llm(model_id,model_filename):
+
+def load_llm_local_rag(modelpath):
     """Lädt das Llama-Modell und gibt die Instanz zurück."""
+    llm = Llama(
+        model_path=modelpath,
+        max_tokens=500,
+        # n_ctx=32768,
+        n_ctx=3001,
+        top_p=0.1,
+        top_k=20,
+        temperature=0.7,
+        n_gpu_layers=20,
+        n_batch=3000,
+        # n_batch=30000,
+        # n_batch=26384,
+        # n_batch=6384,
+        n_threads=multiprocessing.cpu_count() - 1,
+        verbose=False,
+    )
+
+    return llm
+
+
+def load_llm(model_id, model_filename):
+    """Lädt das Llama-Modell von hugginface und gibt die Instanz zurück."""
     llm = Llama.from_pretrained(
         repo_id=model_id,
         filename=model_filename,
@@ -34,6 +57,7 @@ def load_llm(model_id,model_filename):
         verbose=False,
     )
     return llm
+
 
 # llm_cpp = Llama.from_pretrained(
 #     repo_id=model_id,
@@ -72,6 +96,7 @@ def init_model(modelkey):
     llm = load_llm_loacal(model_id, model_folder, model_filename)
     return llm
 
+
 def get_repo_model(modelkey):
     """lade eine Model von Hugginface repo"""
     # Modell-Informationen aus config abrufen
@@ -80,8 +105,17 @@ def get_repo_model(modelkey):
         raise ValueError(f"Kein Modell gefunden für Schlüssel: {modelkey}")
     model_id = model_info["model_id"]
     model_filename = model_info["model_filename"]
-    llm = load_llm(model_id,model_filename)
+    llm = load_llm(model_id, model_filename)
     return llm
+
+
+def get_repo_rag_model(modelkey):
+    """lade eine Model von Hugginface repo"""
+    # Modell-Informationen aus config abrufen
+    model_pfad=get_model_path(modelkey)
+    llm = load_llm_local_rag(model_pfad)
+    return llm
+
 
 def get_model_id(modelkey):
     model_info = config.LLM_MODELS.get(modelkey)
