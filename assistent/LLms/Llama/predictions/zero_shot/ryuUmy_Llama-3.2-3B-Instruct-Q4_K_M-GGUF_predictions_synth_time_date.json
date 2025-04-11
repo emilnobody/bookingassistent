@@ -1,0 +1,527 @@
+[
+    {
+        "query": "Wie kann ich den Bürgerbus für eine Fahrt vom Fischerinsel zur Marienstraße am kommenden Dienstag um 08:00 Uhr reservieren?",
+        "entitys": {
+            "from": "Fischerinsel",
+            "to": "Marienstraße",
+            "date": "2024-07-30",
+            "time": "08:00"
+        }
+    },
+    {
+        "query": "Ist der Bürgerbus am nächsten Freitag um 07:45 Uhr von Walpersdorf nach Aschbach - Staatsstraße verfügbar?",
+        "entitys": {
+            "from": "Walpersdorf",
+            "to": "Aschbach - Staatsstraße",
+            "date": "Freitag",
+            "time": "07:45 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich den Bürgerbus für eine Fahrt von Jägerstraße nach Krögling um 09:00 Uhr am 1. September buchen?",
+        "entitys": {
+            "from": "Jägerstraße",
+            "to": "Krogling",
+            "date": "1. September",
+            "time": "09:00 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte um 12 am Montag von München nach Berlin fahren.",
+        "entitys": {
+            "from": "München",
+            "to": "Berlin",
+            "date": "Montag",
+            "time": "12:00 Uhr"
+        }
+    },
+    {
+        "query": "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm.",
+        "entitys": {
+            "from": "Samstag",
+            "to": "neun",
+            "date": "zwanzig Minuten",
+            "time": "frei vom Olympia Stadium"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt am 18. September um 15:30 Uhr vom Rintheimer Straße 69 nach Percha - Golfclub buchen?",
+        "entitys": {
+            "from": "Rintheimer Straße 69",
+            "to": "Percha - Golfclub",
+            "date": "18. September",
+            "time": "15:30 Uhr"
+        }
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+        "entitys": {
+            "from": "Elendskirchen",
+            "to": "Westerham",
+            "date": "15. Oktober",
+            "time": "zwanzig Uhr"
+        }
+    },
+    {
+        "query": "Ist der Bürgerbus am 29. September um 12:30 Uhr von Percha - Golfclub nach Großhöhenrain - Schule verfügbar?",
+        "entitys": {
+            "from": "Percha - Golfclub",
+            "to": "Großhöhenrain - Schule",
+            "date": "30. September",
+            "time": "nicht verfügbar"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt vom Westerham - Schützen- & Trachtenheim nach Unterwertach am 22. Oktober um 11:45 Uhr buchen?",
+        "entitys": {
+            "from": "Westerham - Schützen- & Trachtenheim",
+            "to": "Unterwertach",
+            "date": "22. Oktober",
+            "time": "zwanzig fünf Minuten vor elf"
+        }
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?",
+        "entitys": {
+            "from": "Aschbach - Staatsstraße",
+            "to": "Oberwertach",
+            "date": "13. September",
+            "time": "07:00 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "entitys": {}
+    },
+    {
+        "query": "Ich möchte am 10. Juli um 16:00 Uhr von Berlin Hauptbahnhof nach Potsdamer Platz fahren.",
+        "entitys": {
+            "from": "Berlin Hauptbahnhof",
+            "to": "Potsdamer Platz",
+            "date": "10. Juli",
+            "time": "16 Uhr"
+        }
+    },
+    {
+        "query": "Wie komme ich am 25. Dezember um 08:00 Uhr von Friedrichstraße nach Schloss Neuschwanstein?",
+        "entitys": {
+            "from": "Friedrichstraße",
+            "to": "Schloss Neuschwanstein",
+            "date": "25. Dezember",
+            "time": "08:00 Uhr"
+        }
+    },
+    {
+        "query": "Ist eine Fahrt von ZOB Hamburg nach Flughafen Frankfurt am 30. April um 20:45 Uhr möglich?",
+        "entitys": {
+            "from": "ZOB Hamburg",
+            "to": "Flughafen Frankfurt",
+            "date": "30. April",
+            "time": "zwanzig fünfzig Minuten"
+        }
+    },
+    {
+        "query": "Ich möchte am 18. Juni um 07:15 Uhr von Schlossplatz nach Alexanderplatz fahren.",
+        "entitys": {
+            "from": "Schlossplatz",
+            "to": "Alexanderplatz",
+            "date": "18. Juni",
+            "time": "07:15 Uhr"
+        }
+    },
+    {
+        "query": "Gibt es eine Verbindung von Bremen Rathaus nach HafenCity Hamburg am 12. Oktober um 11:30 Uhr?",
+        "entitys": {
+            "from": "Bremen Rathaus",
+            "to": "HafenCity Hamburg",
+            "date": "12. Oktober",
+            "time": "zwanzig Minuten vor elf Uhr"
+        }
+    },
+    {
+        "query": "Bitte buchen Sie eine Fahrt von Kurfürstendamm nach Münchner Marienplatz für den 3. August um 10:00 Uhr.",
+        "entitys": {
+            "from": "Kurfürstendamm",
+            "to": "Münchner Marienplatz",
+            "date": "2024-08-03",
+            "time": "20:10"
+        }
+    },
+    {
+        "query": "Kann ich am 22. Januar um 15:45 Uhr von Marktplatz Lübeck nach St. Pauli fahren?",
+        "entitys": {
+            "from": "Marktplatz Lübeck",
+            "to": "St. Pauli",
+            "date": "20. Januar",
+            "time": "15:00 vor 5 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen.",
+        "entitys": {
+            "from": "Goetheplatz",
+            "to": "Schloss Sanssouci",
+            "date": "5. Mai",
+            "time": "20:00"
+        }
+    },
+    {
+        "query": "Gibt es eine Verbindung von Köln Dom nach Düsseldorfer Rheinufer am 30. November um 18:30 Uhr?",
+        "entitys": {
+            "from": "Köln Dom",
+            "to": "Düsseldorfer Rheinufer",
+            "date": "30. November",
+            "time": "18:30 Uhr"
+        }
+    },
+    {
+        "query": "Wie kann ich den Bürgerbus für eine Fahrt vom Fischerinsel zur Marienstraße am kommenden Dienstag um 08:00 Uhr reservieren?",
+        "entitys": {
+            "from": "Fischerinsel",
+            "to": "Marienstraße",
+            "date": "2025-04-14",
+            "time": "08:00 Uhr"
+        }
+    },
+    {
+        "query": "Ist der Bürgerbus am nächsten Freitag um 07:45 Uhr von Walpersdorf nach Aschbach - Staatsstraße verfügbar?",
+        "entitys": {
+            "from": "Walpersdorf",
+            "to": "Aschbach - Staatsstraße",
+            "date": "2025-04-11",
+            "time": "07:45 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich den Bürgerbus für eine Fahrt von Jägerstraße nach Krögling um 09:00 Uhr am 1. September buchen?",
+        "entitys": {
+            "from": "Jägerstraße",
+            "to": "Krogling",
+            "date": "2025-09-01",
+            "time": "09:00 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte um 12 am Montag von München nach Berlin fahren.",
+        "entitys": {
+            "from": "München",
+            "to": "Berlin",
+            "date": "2025-04-14",
+            "time": "12 am"
+        }
+    },
+    {
+        "query": "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm.",
+        "entitys": {
+            "from": "Samstag, 2025-04-11, 24:15",
+            "to": "Kudamm",
+            "date": "2025-04-11",
+            "time": "24:15"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt am 18. September um 15:30 Uhr vom Rintheimer Straße 69 nach Percha - Golfclub buchen?",
+        "entitys": {
+            "from": "Rintheimer Straße 69",
+            "to": "Percha - Golfclub",
+            "date": "18. September",
+            "time": "15:30 Uhr"
+        }
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+        "entitys": {
+            "from": "Elendskirchen",
+            "to": "Westerham",
+            "date": "2025-10-15",
+            "time": ""
+        }
+    },
+    {
+        "query": "Ist der Bürgerbus am 29. September um 12:30 Uhr von Percha - Golfclub nach Großhöhenrain - Schule verfügbar?",
+        "entitys": {
+            "from": "Percha - Golfclub",
+            "to": "Großhöhenrain - Schule",
+            "date": "2025-09-29",
+            "time": "12:30 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt vom Westerham - Schützen- & Trachtenheim nach Unterwertach am 22. Oktober um 11:45 Uhr buchen?",
+        "entitys": {
+            "from": "Westerham - Schützen- & Trachtenheim",
+            "to": "Unterwertach",
+            "date": "2024-10-22",
+            "time": "11:45"
+        }
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?",
+        "entitys": {
+            "from": "Aschbach - Staatsstraße",
+            "to": "Oberwertach",
+            "date": "13. September",
+            "time": "07:00 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "entitys": {}
+    },
+    {
+        "query": "Ich möchte am 10. Juli um 16:00 Uhr von Berlin Hauptbahnhof nach Potsdamer Platz fahren.",
+        "entitys": {
+            "from": "Berlin Hauptbahnhof",
+            "to": "Potsdamer Platz",
+            "date": "2025-07-10",
+            "time": "16:00 Uhr"
+        }
+    },
+    {
+        "query": "Wie komme ich am 25. Dezember um 08:00 Uhr von Friedrichstraße nach Schloss Neuschwanstein?",
+        "entitys": {
+            "from": "Friedrichstraße",
+            "to": "Schloss Neuschwanstein",
+            "date": "2025-12-25",
+            "time": "08:00"
+        }
+    },
+    {
+        "query": "Ist eine Fahrt von ZOB Hamburg nach Flughafen Frankfurt am 30. April um 20:45 Uhr möglich?",
+        "entitys": {
+            "from": "ZOB Hamburg",
+            "to": "Flughafen Frankfurt",
+            "date": "2025-04-30",
+            "time": "20:45 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte am 18. Juni um 07:15 Uhr von Schlossplatz nach Alexanderplatz fahren.",
+        "entitys": {
+            "from": "Schlossplatz",
+            "to": "Alexanderplatz",
+            "date": "2025-06-18",
+            "time": "07:15 Uhr"
+        }
+    },
+    {
+        "query": "Gibt es eine Verbindung von Bremen Rathaus nach HafenCity Hamburg am 12. Oktober um 11:30 Uhr?",
+        "entitys": {
+            "from": "Bremen Rathaus",
+            "to": "HafenCity Hamburg",
+            "date": "12. Oktober",
+            "time": "11:30 Uhr"
+        }
+    },
+    {
+        "query": "Bitte buchen Sie eine Fahrt von Kurfürstendamm nach Münchner Marienplatz für den 3. August um 10:00 Uhr.",
+        "entitys": {
+            "from": "Kurfürstendamm",
+            "to": "Münchner Marienplatz",
+            "date": "2025-08-03",
+            "time": "10:00"
+        }
+    },
+    {
+        "query": "Kann ich am 22. Januar um 15:45 Uhr von Marktplatz Lübeck nach St. Pauli fahren?",
+        "entitys": {
+            "from": "Marktplatz Lübeck",
+            "to": "St. Pauli",
+            "date": "2025-01-22",
+            "time": "15:45 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen.",
+        "entitys": {
+            "from": "Goetheplatz",
+            "to": "Schloss Sanssouci",
+            "date": "2025-05-05",
+            "time": "13:00 Uhr"
+        }
+    },
+    {
+        "query": "Gibt es eine Verbindung von Köln Dom nach Düsseldorfer Rheinufer am 30. November um 18:30 Uhr?",
+        "entitys": {
+            "from": "Köln Dom",
+            "to": "Düsseldorfer Rheinufer",
+            "date": "30. November",
+            "time": "18:30 Uhr"
+        }
+    },
+    {
+        "query": "Wie kann ich den Bürgerbus für eine Fahrt vom Fischerinsel zur Marienstraße am kommenden Dienstag um 08:00 Uhr reservieren?",
+        "entitys": {
+            "from": "Fischerinsel",
+            "to": "Marienstraße",
+            "date": "2025-04-14",
+            "time": "08:00 Uhr"
+        }
+    },
+    {
+        "query": "Ist der Bürgerbus am nächsten Freitag um 07:45 Uhr von Walpersdorf nach Aschbach - Staatsstraße verfügbar?",
+        "entitys": {
+            "from": "Walpersdorf",
+            "to": "Aschbach - Staatsstraße",
+            "date": "2025-04-11",
+            "time": "07:45 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich den Bürgerbus für eine Fahrt von Jägerstraße nach Krögling um 09:00 Uhr am 1. September buchen?",
+        "entitys": {
+            "from": "Jägerstraße",
+            "to": "Krogling",
+            "date": "2025-09-01",
+            "time": "09:00 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte um 12 am Montag von München nach Berlin fahren.",
+        "entitys": {
+            "from": "München",
+            "to": "Berlin",
+            "date": "2025-04-14",
+            "time": "12:00 Uhr"
+        }
+    },
+    {
+        "query": "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm.",
+        "entitys": {
+            "from": "Samstag zwanzig Minuten nach neun",
+            "to": "Olympia Stadium",
+            "date": "2025-04-11",
+            "time": "Kudamm"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt am 18. September um 15:30 Uhr vom Rintheimer Straße 69 nach Percha - Golfclub buchen?",
+        "entitys": {
+            "from": "Rintheimer Straße 69",
+            "to": "Percha - Golfclub",
+            "date": "18. September",
+            "time": "15:30 Uhr"
+        }
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+        "entitys": {
+            "from": "Elendskirchen",
+            "to": "Westerham",
+            "date": "2025-10-15",
+            "time": null
+        }
+    },
+    {
+        "query": "Ist der Bürgerbus am 29. September um 12:30 Uhr von Percha - Golfclub nach Großhöhenrain - Schule verfügbar?",
+        "entitys": {
+            "from": "2025-09-30",
+            "to": "Großhöhenrain - Schule",
+            "date": "2025-09-30",
+            "time": "nicht verfügbar"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt vom Westerham - Schützen- & Trachtenheim nach Unterwertach am 22. Oktober um 11:45 Uhr buchen?",
+        "entitys": {
+            "from": "Westerham - Schützen- & Trachtenheim",
+            "to": "Unterwertach",
+            "date": "2024-10-22",
+            "time": "11:25"
+        }
+    },
+    {
+        "query": "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?",
+        "entitys": {
+            "from": "Aschbach - Staatsstraße",
+            "to": "Oberwertach",
+            "date": "13. September",
+            "time": "07:00 Uhr"
+        }
+    },
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "entitys": {}
+    },
+    {
+        "query": "Ich möchte am 10. Juli um 16:00 Uhr von Berlin Hauptbahnhof nach Potsdamer Platz fahren.",
+        "entitys": {
+            "from": "Berlin Hauptbahnhof",
+            "to": "Potsdamer Platz",
+            "date": "2025-07-10",
+            "time": "16 Uhr"
+        }
+    },
+    {
+        "query": "Wie komme ich am 25. Dezember um 08:00 Uhr von Friedrichstraße nach Schloss Neuschwanstein?",
+        "entitys": {
+            "from": "Friedrichstraße",
+            "to": "Schloss Neuschwanstein",
+            "date": "2025-12-25",
+            "time": "08:00"
+        }
+    },
+    {
+        "query": "Ist eine Fahrt von ZOB Hamburg nach Flughafen Frankfurt am 30. April um 20:45 Uhr möglich?",
+        "entitys": {
+            "from": "ZOB Hamburg",
+            "to": "Flughafen Frankfurt",
+            "date": "30. April",
+            "time": "zwanzig fünfzig Minuten"
+        }
+    },
+    {
+        "query": "Ich möchte am 18. Juni um 07:15 Uhr von Schlossplatz nach Alexanderplatz fahren.",
+        "entitys": {
+            "from": "Schlossplatz",
+            "to": "Alexanderplatz",
+            "date": "2025-06-18",
+            "time": "07:15 Uhr"
+        }
+    },
+    {
+        "query": "Gibt es eine Verbindung von Bremen Rathaus nach HafenCity Hamburg am 12. Oktober um 11:30 Uhr?",
+        "entitys": {
+            "from": "Bremen Rathaus",
+            "to": "HafenCity Hamburg",
+            "date": "12. Oktober",
+            "time": "zwanzig Minuten vor elf Uhr"
+        }
+    },
+    {
+        "query": "Bitte buchen Sie eine Fahrt von Kurfürstendamm nach Münchner Marienplatz für den 3. August um 10:00 Uhr.",
+        "entitys": {
+            "from": "Kurfürstendamm",
+            "to": "Münchner Marienplatz",
+            "date": "2025-08-03",
+            "time": "unbekannt"
+        }
+    },
+    {
+        "query": "Kann ich am 22. Januar um 15:45 Uhr von Marktplatz Lübeck nach St. Pauli fahren?",
+        "entitys": {
+            "from": "Marktplatz Lübeck",
+            "to": "St. Pauli",
+            "date": "20. Januar",
+            "time": "15:00 vor 5 Uhr"
+        }
+    },
+    {
+        "query": "Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen.",
+        "entitys": {
+            "from": "Goetheplatz",
+            "to": "Schloss Sanssouci",
+            "date": "2025-05-05",
+            "time": "20:00"
+        }
+    },
+    {
+        "query": "Gibt es eine Verbindung von Köln Dom nach Düsseldorfer Rheinufer am 30. November um 18:30 Uhr?",
+        "entitys": {
+            "from": "Köln Dom",
+            "to": "Düsseldorfer Rheinufer",
+            "date": "30. November",
+            "time": "18:30 Uhr"
+        }
+    }
+]

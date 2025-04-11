@@ -20,10 +20,6 @@ ground_truth_file = os.path.join(config.DATASETS_FOLDER, "testdatensatz-zero-sho
 with open(ground_truth_file, "r", encoding="utf-8") as file:
     ground_truth_data = json.load(file)
 
-# Container für Predictions
-predictions = []
-# Container für falsches Json
-failed_format = []
 llm_prediction_folder = os.path.normpath(
     os.path.join(config.LLAMA_FOLDER, "predictions", "zero_shot")
 )
@@ -32,14 +28,15 @@ llm_prediction_folder = os.path.normpath(
 for groundtruth_file in ground_truth_files:
     print("hi")
     groundtruth_infos= groundtruth_file[1]
-    run_rag_predictions(groundtruth_file,llm_prediction_folder,model_key,llm)
+    run_rag_predictions(ground_truth_files[0],llm_prediction_folder,model_key,llm)
+# für jeden file einen run durchführen 
 
 
-print(llm_prediction_folder)
-predictions_file = f"{llm_prediction_folder}/{model_id_cleaned}_predictions_RAG.json"
-fail_for_file = os.path.normpath(
-    os.path.join(llm_prediction_folder, f"{model_id_cleaned}_failed_format_RAG.json")
-)
+# print(llm_prediction_folder)
+# predictions_file = f"{llm_prediction_folder}/{model_id_cleaned}_predictions_RAG.json"
+# fail_for_file = os.path.normpath(
+#     os.path.join(llm_prediction_folder, f"{model_id_cleaned}_failed_format_RAG.json")
+# )
 # Der RAG Teil kommt hier hin
 
 # def run_predictions(ground_truth_data, llm_prediction_folder, modelkey, llm):

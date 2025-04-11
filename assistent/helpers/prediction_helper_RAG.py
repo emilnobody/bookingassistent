@@ -67,33 +67,33 @@ def get_prediction_folder_path(model_folder):
     return folder
 
 
-def create_prediction_file_path(llm_prediction_folder, model_key, shot, filename):
+def create_prediction_file_path(llm_prediction_folder, model_key, shot, step):
     """Erstellt den Pfad für die Predictions"""
     model_id_cleaned = clean_model_id(model_key)
     if shot == "few":
-        predictions_file = f"{llm_prediction_folder}/{model_id_cleaned}_few_shot_predictions_{filename}"
+        predictions_file = f"{llm_prediction_folder}/{model_id_cleaned}_few_shot_predictions_{step}.json"
         return predictions_file
     predictions_file = (
-        f"{llm_prediction_folder}/{model_id_cleaned}_predictions_{filename}"
+        f"{llm_prediction_folder}/{model_id_cleaned}_predictions_{step}.json"
     )
     return predictions_file
 
 
-def create_failed_format_file_path(llm_prediction_folder, model_key, shot, filename):
+def create_failed_format_file_path(llm_prediction_folder, model_key, shot, step):
     """Erstelle den Pafad für die Fehler"""
     model_id_cleaned = clean_model_id(model_key)
     if shot == "few":
         fail_for_file = os.path.normpath(
             os.path.join(
                 llm_prediction_folder,
-                f"{model_id_cleaned}_few_shot_failed_format_{filename}",
+                f"{model_id_cleaned}_few_shot_failed_format_{step}.json",
             )
         )
         return fail_for_file
 
     fail_for_file = os.path.normpath(
         os.path.join(
-            llm_prediction_folder, f"{model_id_cleaned}_failed_format_{filename}"
+            llm_prediction_folder, f"{model_id_cleaned}_failed_format_{step}.json"
         )
     )
     return fail_for_file
@@ -211,38 +211,39 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
     # Ordner für die Ergebnisse zuweisen
     shot = "zero_rag"
     filename = ground_truth_file[0]
-
-    failed_format_file = create_failed_format_file_path(
-        llm_prediction_folder, modelkey, shot, filename
-    )
-    predictions_file = create_prediction_file_path(
-        llm_prediction_folder, modelkey, shot, filename
-    )
-    # reasoning_file = create_reasoning_file_path(
-    #     llm_prediction_folder, modelkey, filename
-    # )
-    
+    # Die zu testenden Pipeline-Varianten
+    # userdata mit der liste[station,json] [time,json] [date,json] [station,time,date,json] durchgeführt werden
+    pipelines = {
+        "station": ["station", "json"],
+        "time": ["time", "json"],
+        "date": ["date", "json"],
+        "time_date": ["time", "date", "json"],
+        "all": ["station", "time", "date", "json"]
+    }
     # Enthält die query daten Query- und Entitäten-Json
     ground_truth_data = ground_truth_file[1]
-    print(ground_truth_data)
-    for entry in ground_truth_data:
-        query = entry["query"]
-        # outputs=run_pipline(query,llm)
-        # outputs=run_pipline_synth(query,llm)
-        station_output = run_pipeline(query, llm, ["station", "json"])
-        outputs_time = run_pipeline(query, llm, ["time", "json"])
-        outputs_date = run_pipeline(query, llm, ["date", "json"])
-        outputs_time_date = run_pipeline(query, llm, ["time", "date", "json"])
-        outputs_all = run_pipeline(query, llm, ["station", "time", "date", "json"])
-        outputs = [
-            station_output,
-            outputs_time,
-            outputs_date,
-            outputs_time_date,
-            outputs_all,
-        ]
-        for output in outputs:
-            print(output)
+    # print(ground_truth_data)
+    if "synth" in filename:
+    # sync mit der liste [time,json] [date,json] [time,date,json]durchgeführt werden
+        # Die zu testenden Pipeline-Varianten
+        pipelines = {
+            # "station": ["station", "json"],
+            "time": ["time", "json"],
+            "date": ["date", "json"],
+            "time_date": ["time", "date", "json"],
+            # "all": ["station", "time", "date", "json"]
+        } 
+    
+    for name, steps in pipelines.items():
+        failed_format_file = create_failed_format_file_path(llm_prediction_folder, modelkey, shot, f"synth_{name}")
+        predictions_file = create_prediction_file_path(llm_prediction_folder, modelkey, shot, f"synth_{name}")
+        # reasoning_file = create_reasoning_file_path(
+        #     llm_prediction_folder, modelkey, filename
+        # )
+        #für jeden query
+        for entry in ground_truth_data:
+            query = entry["query"]
+            output = run_pipeline(query, llm, steps)
             generated_text = output["messages"][-1].content
             try:
                 extracted_json = json.loads(generated_text)
@@ -280,12 +281,7 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
         #     )
 
 
-# def stages_filter(keys: list[str]):
-#     # hier kommt der Filter hin
-#     for key in keys:
-#         outputs = run_pipeline(query, llm, ["station", "json"])
-#         outputs = run_pipeline(query, llm, ["time", "json"])
-#         outputs = run_pipeline(query, llm, ["date", "json"])
-#         outputs = run_pipeline(query, llm, ["time", "date", "json"])
-#         outputs = run_pipeline(query, llm, ["station", "time", "date", "json"])
-#     print("h")
+
+
+
+
