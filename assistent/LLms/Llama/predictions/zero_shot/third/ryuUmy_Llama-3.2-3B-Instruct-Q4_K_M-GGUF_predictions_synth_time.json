@@ -14,7 +14,7 @@
             "from": "Walpersdorf",
             "to": "Aschbach - Staatsstraße",
             "date": "Freitag",
-            "time": "um zwanzig vor sechs"
+            "time": "07:45 Uhr"
         }
     },
     {
@@ -38,10 +38,10 @@
     {
         "query": "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm.",
         "entitys": {
-            "from": "neun zwanzig Minuten nach zwanzig Minuten vor zehn",
-            "to": "Samstag",
-            "date": "",
-            "time": "zwanzig Minuten nach zwanzig Minuten vor zehn"
+            "from": "Samstag",
+            "to": "neun",
+            "date": "zwanzig Minuten",
+            "time": "frei vom Olympia Stadium"
         }
     },
     {
@@ -59,7 +59,7 @@
             "from": "Elendskirchen",
             "to": "Westerham",
             "date": "15. Oktober",
-            "time": "zwanzig vor sechs"
+            "time": "zwanzig Uhr"
         }
     },
     {
@@ -67,8 +67,8 @@
         "entitys": {
             "from": "Percha - Golfclub",
             "to": "Großhöhenrain - Schule",
-            "date": "29. September",
-            "time": "zwanzig dreißig Minuten nach zwölf"
+            "date": "30. September",
+            "time": "nicht verfügbar"
         }
     },
     {
@@ -76,8 +76,8 @@
         "entitys": {
             "from": "Westerham - Schützen- & Trachtenheim",
             "to": "Unterwertach",
-            "date": "2024-10-22",
-            "time": "10:20"
+            "date": "22. Oktober",
+            "time": "zwanzig fünf Minuten vor elf"
         }
     },
     {
@@ -117,7 +117,7 @@
             "from": "ZOB Hamburg",
             "to": "Flughafen Frankfurt",
             "date": "30. April",
-            "time": "zwanzig fünfzig Minuten nach zwölf"
+            "time": "zwanzig fünfzig Minuten"
         }
     },
     {
@@ -135,7 +135,7 @@
             "from": "Bremen Rathaus",
             "to": "HafenCity Hamburg",
             "date": "12. Oktober",
-            "time": "11:30 Uhr"
+            "time": "zwanzig Minuten vor elf Uhr"
         }
     },
     {
@@ -143,8 +143,8 @@
         "entitys": {
             "from": "Kurfürstendamm",
             "to": "Münchner Marienplatz",
-            "date": "3. August",
-            "time": "10 Uhr"
+            "date": "2024-08-03",
+            "time": "20:10"
         }
     },
     {
@@ -162,7 +162,7 @@
             "from": "Goetheplatz",
             "to": "Schloss Sanssouci",
             "date": "5. Mai",
-            "time": "13 Uhr"
+            "time": "20:00"
         }
     },
     {

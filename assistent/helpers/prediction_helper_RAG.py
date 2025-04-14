@@ -235,6 +235,8 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
         } 
     
     for name, steps in pipelines.items():
+        predictions=[]
+        failed_format = []
         failed_format_file = create_failed_format_file_path(llm_prediction_folder, modelkey, shot, f"synth_{name}")
         predictions_file = create_prediction_file_path(llm_prediction_folder, modelkey, shot, f"synth_{name}")
         # reasoning_file = create_reasoning_file_path(

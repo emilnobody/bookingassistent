@@ -72,13 +72,33 @@ def time_proofreader(state: MessagesState, llm):
     latest_message = state["messages"][-1]
     # knowladgebase url
     url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
+    # url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
+    # url = "https://www.dreiviertelzwoelf.com/was-ist-dreiviertelzwoelf-und-wann/die-uhrzeit/"
     result = extract_website_content(url)
     prompt_time_knowledge = result.get("results")[0].get("raw_content")
+    # Regex für die Extraktion der Zeitangaben und deren Beschreibungen
+    time_pattern = regex.compile(
+        r"(\d{2}:\d{2})\s(\d{2}:\d{2})\s([a-zA-Z]+)\s([a-zA-Z]+)"
+    )
+
+    # Extrahieren und Umstrukturieren des Texts
+    formatted_text = []
+    matches = time_pattern.findall(prompt_time_knowledge)
+
+    for match in matches:
+        time_24hr = match[0]  # Uhrzeit im 24-Stunden-Format
+        informal_time_de = match[2]  # Deutsche informelle Zeitangabe
+
+        # Formatierung der Ausgabe nur mit den deutschen Angaben
+        formatted_text.append(f"{time_24hr} -> {informal_time_de}")
+
+    # Zusammenfügen der formatierten Textteile
+    formatted_text = "\n".join(formatted_text)
     # lade Prompt für
     # profreader_prompt_time = (
     #     "You are a meticulous German 'Proofreading Expert' for time expressions.\n\n"
     #     "You have the knowledge of the following German time expression rules written in German:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
+    #     f"{formatted_text}\n\n"
     #     # "Your task is to identify in the incomming message the informal or relative time expressions and replace them with the corresponding numerical time in HH:MM format.\n"
     #     "Your task is to identify in the incomming message the informal or relative time expressions and replace them with the corresponding numerical time in HH:MM format.\n"
     #     "Do not change or correct formal/numerical time expressions. Only modify informal (text expression of time) time expressions.\n\n"
@@ -91,101 +111,48 @@ def time_proofreader(state: MessagesState, llm):
     #     "5. the new text must have only numerical time expressions no expression of time in textual."
     # )
 
-    profreader_prompt_time = (
-        # "You are a German meticulous Proofreading Expert for German formal and informal expressions of time.\n\n"
-        "The knowledge for german time expressions are:\n\n"
-        f"{prompt_time_knowledge}\n\n"
-        "ENDE OF KNOWLEDGE\n"
-        # "You are able to detect textutal informal time phrases and understand them correctly.\n"
-        # "you are able to break down the time phrase to check if you understood them correctly.\n"
-        "In the following sentence, replace all uppercase informal time expressions with their correct numerical clock representation. Do not change any other part of the text. Return only the final sentence.\n"
-        "Do not paraphrase. Do not explain. Do not reword.\n\n"
-        "Do not judge the meaning or correctness of the time expressions — assume all time phrases are valid.\n"
-        # "Task : Repeat the following message exactly as it but for infromel time phrases all uppercase."
-        # "Task : Repeat the following message exactly as it but for infromel time phrases all uppercase."
-        # "Repeat the following message exactly as it, Just return the exact same sentence."
-        # "youDo not correct spelling, grammar, names, or anything outside the time expressions.\n"
-        # "before you response check if you realy repeat the excat message of the User just with changed time."
-        # "Your task is to only repeat the MESSAGE NO answering to he messsage!!!\n"
-        # "you are also able to change them into the corresponding numerical correctly.\n"
-        # "So break down the phrase bit by bit and check translate the textual representation into numerical one bit for bit and then rewrite the pharse into a correct numerical time representation."
-        # "ATTENTION! You do not add or correct to the structur or gramar of the message in this process just the textutal informal time phrases.\n"
-        # "So your task is to finde day time representation and exchange them in the given text to THE corresponding numerical one.\n\n"
-        # "so you response without comments or a thinking process!"
-        # "Rules:\n"
-        # "-The output contains no explanations or additional text outside the original messege.\n"
-        # "-The output contains no informal expressions from the original message.\n"
-    )
-    profreader_prompt_time_up = (
-        # "You are a German meticulous Proofreading Expert for German formal and informal expressions of time.\n\n"
-        "The knowledge for german time expressions are:\n\n"
-        f"{prompt_time_knowledge}\n\n"
-        "ENDE OF KNOWLEDGE\n"
-        # "You are able to detect textutal informal time phrases and understand them correctly.\n"
-        # "you are able to break down the time phrase to check if you understood them correctly.\n"
-        "Task : Repeat the following message exactly as it but for infromel time phrases all uppercase."
-        # "Task : Repeat the following message exactly as it but for infromel time phrases all uppercase."
-        # "Repeat the following message exactly as it, Just return the exact same sentence."
-        # "youDo not correct spelling, grammar, names, or anything outside the time expressions.\n"
-        # "before you response check if you realy repeat the excat message of the User just with changed time."
-        # "Your task is to only repeat the MESSAGE NO answering to he messsage!!!\n"
-        # "you are also able to change them into the corresponding numerical correctly.\n"
-        # "So break down the phrase bit by bit and check translate the textual representation into numerical one bit for bit and then rewrite the pharse into a correct numerical time representation."
-        # "ATTENTION! You do not add or correct to the structur or gramar of the message in this process just the textutal informal time phrases.\n"
-        # "So your task is to finde day time representation and exchange them in the given text to THE corresponding numerical one.\n\n"
-        # "so you response without comments or a thinking process!"
-        # "Rules:\n"
-        # "-The output contains no explanations or additional text outside the original messege.\n"
-        # "-The output contains no informal expressions from the original message.\n"
-    )
     # profreader_prompt_time = (
-    #     "You are a German meticulous Proofreading Expert for German formal and informal expressions of time.\n\n"
-    #     "The knowledge for german time expressions are:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     # "Your task is to check the German Message for German informal expressions of a certain time and correct this one with the numerical representation of time that a clock would display.\n\n"
-    #     # "Your task is to identify in the incomming message the informal or relative time expressions and replace them with the corresponding numerical time in HH:MM format.\n"
-    #     "You are able to finde textutal time phrases understand them correctly and change then in the given text into the understood numerical ones. "
-    #     # "- Also fokus on changing them into numerical ones!"
-    #     "- do not put your fokus on if the expression is right or wrong in the message!"
-    #     "- if no 'nachmittag' is added, chose the numerical 'vormittag' representation.\n"
-    #     # "- Output the user question that fites the Rules without any explanations or additional text.\n"
-    #     "- only repeat the input but befitting the Rules without any explanations or additional text.\n"
-    #     "**Rules:**\n"
-    #     # "-The output contains numerical time expressions."
-    #     "-The output contains no explanations or additional text outside the original messege."
-    #     "-The output contains no informal expressions from the original message."
-    #     # "- verify the clock times in the message \n"
-    #     # "- Response ONLY the corrected user question without any explanations or additional text.\n"
-    #     # "- Do not judge the meaning or correctness of the time expressions — assume all time phrases are valid.\n"
-    #     # "- Do not evaluate the time expressions assume all time phrases are valid.\n"
-    #     # "- Do not correct spelling, grammar, names, or anything outside the time expressions.\n"
-    #     # "- Check again if in your Response is A the modified a NUMERICAL clock representation !!!! \n"
-    #     # "6. Repsone with The German Message where you replaced the corrected former time expression with the Numerical one that you verified."
-    #     # "- place the numerical correction into the user query."
-
+    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of day time.\n\n"
+    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
+    #     f"{formatted_text}\n\n"
+    #     "Your task is to find and change the time expressions of query into the corresponding numeric clock times.\n"
+    #     "you get the corresponding numeric time in the reference knowlegde Table."
+    #     # "use the refference of knowledge with the table given to do it."
+    #     # "The rest of the text should remain unchanged\n\n"
+    #     # "For time expressions, you should convert informal expressions like 'Viertel nach', 'halb', 'drei viertel', etc., into their corresponding numeric time representations.\n"
+    #     # "For example, 'Viertel nach fünf' should become '5:15' and 'drei viertel 11' should become '10:45'. You should follow this pattern for all time expressions.\n\n"
+    #     # "no need to wirte an Answer to the actual contex of the message!\n"
+    #     # "So do not answer to the Message and do not comment to it either!\n"
     # )
     # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-    #     "The knowledge for german time expressions are:\n\n"
+    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of day time.\n\n"
+    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
     #     f"{prompt_time_knowledge}\n\n"
-    #     # "Your task is to check the German Message for German informal expressions of a certain time and correct this one with the numerical representation of time that a clock would display.\n\n"
-    #     # "Your task is to identify in the incomming message the informal or relative time expressions and replace them with the corresponding numerical time in HH:MM format.\n"
+    #     "Your task is to review the following text and convert only the time references into numeric clock times, ensuring they are accurately represented in the correct informal German style.\n"
+    #     "The rest of the text should remain unchanged, and the entire output should be in correct, natural German.\n\n"
+    #     "For time expressions, you should convert informal expressions like 'Viertel nach', 'halb', 'drei viertel', etc., into their corresponding numeric time representations.\n"
+    #     "For example, 'Viertel nach fünf' should become '5:15' and 'drei viertel 11' should become '10:45'. You should follow this pattern for all time expressions.\n\n"
+    #     "Please provide the corrected text while keeping it in proper German grammar and formatting."
+    #     "Here is the text to review:\n"
+    # )
+    # profreader_prompt_time = (
+    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of day time .\n\n"
+    #     # "The knowledge for german time expressions are:\n\n"
+    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
+    #     f"{prompt_time_knowledge}\n\n"
+    #     "the knowledge above teached you the numerical meaning of 'Viertel', 'halb', 'drei virtel' and so on are related to the min ."
+    #     " now you know the terms and meaning of 'Viertel', 'halb', 'drei virtel' and so on. "
+    #     "trim the text!"
     #     "**Rules:**\n"
-    #     # "- verify the clock times in the message \n"
-    #     "- fokus on th the clock times in the message,dont think only return the hle modified user message. \n"
-    #     # "- Do not judge the meaning or correctness of the time expressions — assume all time phrases are valid.\n"
-    #     # "- Do not evaluate the time expressions assume all time phrases are valid.\n"
-    #     # "- Do not correct spelling, grammar, names, or anything outside the time expressions.\n"
-    #     "- Check again if in your Response is A the modified a NUMERICAL clock representation !!!! \n"
-    #     "- if no 'nachmittag' is added, chose the numerical 'vormittag' representation.\n"
-    #     # "6. Repsone with The German Message where you replaced the corrected former time expression with the Numerical one that you verified."
-    #     "- place the numerical correction into the user query."
-    #     # "5. place the correction into the query."
+    #     "- verify the clock times in the message \n"
+    #     "- Check again if your Response is A completly a NUMERICAL clock representation !!!! \n\n"
     #     # "3. Check the Übersicht: examples for references before responding!\n"
     #     # "1. Only verify the clock times in the message.\n"
+    #     "if no 'nachmittag' is added, chose the numerical 'vormittag' representation.\n"
+    #     "Your task is to finde German informal expressions of a certain time and correct this one with the numerical representation of time that a clock would display.\n\n"
     #     # "2. Your Response MUST be the numerical representation of the time found in the message.\n"
     #     # "2. Response MUST be identical to the original.\n"
-    #     # "- Response ONLY the corrected user question without any explanations or additional text.\n"
+    #     # "3. Response ONLY the corrected user question without any explanations or additional text.\n"
     #     # "3. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
     #     # "4. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
     #     # "5. Only 'HH:MM UHR' that could appear on a digital clock face.\n"
@@ -208,22 +175,11 @@ def time_proofreader(state: MessagesState, llm):
     # profreader_prompt_time = (
     #     # "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
     #     # "The knowledge for german time expressions are:\n\n"
-    #     # f"{prompt_time_knowledge}\n\n"
+    #     f"{formatted_text}\n\n"
     #     "Your task is to identify and correct only expressions that represent a specific time of day**, meaning values that a clock (digital or analog) could display, such as hours and minutes.\n"
     #     "You must ignore all other kinds of time-related expressions (e.g., days, dates, durations, sequences, or general references like 'later', 'soon', 'Saturday').\n\n"
     #     "Do not correct grammar, spelling, or stylistic issues. Do not explain your changes. Do not alter names or sentence structure.\n\n"
     #     "Your output should be only the corrected sentence, with only valid time-of-day expressions updated into standard, clock-readable form. Leave all other parts exactly as they are.\n"
-    # )
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-    #     "The knowledge for german time expressions are:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     "Please identify and correct only those time expressions in the following German sentence that represent specific times of day — values that could be displayed on a clock. Do not change any other part of the text.\n"
-    #     # "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
-    #     # "**Rules:**\n"
-    #     # "1. Response ONLY the corrected user question without any explanations or additional text.\n"
-    #     # "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
-    #     # "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
     # )
     # Original
     # profreader_prompt_time = (
@@ -236,31 +192,67 @@ def time_proofreader(state: MessagesState, llm):
     #     "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
     #     "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
     # )
+    # #Das Klappt mit virtel
+    profreader_prompt_time = (
+        "You are a language model that only repeats the user's input, which is entirely in German. "
+        "The following is your reference knowledge for informal time expressions in German:\n\n"
+        f"{prompt_time_knowledge}\n\n"
+        "make only time expressions phrases words into UPPERCASE word . "
+        # "viertel nach eins is for sure in the text.\n"
+        "double check the Text again for this phrases."
+    )
+    #WÜRDE ES SO LASSEN KEIN BOCK MEHR!
+    profreader_prompt_time = (
+        "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
+        "The knowledge for german time expressions are:\n\n"
+        f"{prompt_time_knowledge}\n\n"
+        "trim the text."
+        "Your task is to check the Mesage for informal out-written expressions of a certain time and replace them with the NUMERICAL representation of this time.\n\n"
+        "Check the Message again for 'nach' or 'vor' cause 'nach' means after and 'vor' means before." \
+        "Remeber this 'zehn nach zehn' means 'ten after ten' nummerical written as '10:10'."
+        "Double Check if you did this right!"
+
+        "**Rules:**\n"
+        "1. Response ONLY the corrected user question without any explanations or additional text.\n"
+        "2. It is forbidden to change a number into a out-written times expressions!\n"
+        "3. Output MUST be a single sentence identical to the original, except for corrected expressions of time.\n"
+    )
+    # profreader_prompt_time = (
+    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
+    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
+    #     f"{prompt_time_knowledge}\n\n"
+    #     # "Please identify and correct only those time expressions in the following German sentence that represent specific times of day — values that are part of the reference knowledge. Do not change any other part of the text.\n"
+    #     "trim the text then do the task. do not change the original text! just replace!"
+    #     "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
+    #     "**Rules:**\n"
+    #     "1. Response ONLY the corrected user question without any explanations or additional text.\n"
+    #     # "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
+    #     # "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
+    # )
+    # Das Klappt mit virtel
+    # profreader_prompt_time = (
+    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
+    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
+    #     f"{prompt_time_knowledge}\n\n"
+    #     # "Please identify and correct only those time expressions in the following German sentence that represent specific times of day — values that are part of the reference knowledge. Do not change any other part of the text.\n"
+    #     "trim the text then do the task. do not change the original text! just replace!"
+    #     "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
+    #     "**Rules:**\n"
+    #     "1. Response ONLY the corrected user question without any explanations or additional text.\n"
+    #     # "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
+    #     # "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
+    # )
 
     token_and_infrence_display_llcpp(llm, profreader_prompt_time, prompt_time_knowledge)
     # Inference und Run
     start_time = time.time()
-    response1 = llm.create_chat_completion(
-        messages=[
-            {"role": "system", "content": profreader_prompt_time_up},
-            {"role": "user", "content": state["messages"][-1].content},
-        ],
-        max_tokens=3000,
-        temperature=0.7,
-        top_p=0.1,
-        top_k=20,
-    )
-    # end_time = time.time()
-    # infernce_time = end_time - start_time
-    print(f"das ist der Response 1: {response1}")
-    # start_time = time.time()
     response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": profreader_prompt_time},
-            {"role": "user", "content": response1["choices"][0]["message"]["content"]},
+            {"role": "user", "content": state["messages"][-1].content},
         ],
         max_tokens=3000,
-        temperature=0.7,
+        temperature=0.5,
         top_p=0.1,
         top_k=20,
     )
@@ -382,12 +374,136 @@ def build_pipeline_stages(stages: list[str], llm):
     return workflow.compile(checkpointer=memory)
 
 
+def run_pipline(query_profread: str, llm):
+    # Neue Funktion, die automatisch llm befüllt
+    time_proofreader_with_llm = partial(time_proofreader, llm=llm)
+    station_proofread_with_llm = partial(station_proofread, llm=llm)
+    date_proofreader_with_llm = partial(date_proofreader, llm=llm)
+    extracting_json_with_llm = partial(extracting_json, llm=llm)
+    print("run")
+    workflow = StateGraph(state_schema=MessagesState)
+    workflow.add_node("time", time_proofreader_with_llm)
+    workflow.add_node("stations", station_proofread_with_llm)
+    workflow.add_node("date", date_proofreader_with_llm)
+    workflow.add_node("json", extracting_json_with_llm)
+    # workflow.add_node("time", time_proofreader)
+    # workflow.add_node("stations", station_proofread)
+    # workflow.add_node("date", date_proofreader)
+    # workflow.add_node("json", extracting_json)
+    # Die Pipeline
+    workflow.add_edge(START, "time")
+    # workflow.add_edge(START, "stations")
+    workflow.add_edge("time", "stations")
+    workflow.add_edge("stations", "date")
+    workflow.add_edge("date", "json")
+    workflow.add_edge("json", END)
+    # workflow.add_edge("stations", "time")
+
+    memory = MemorySaver()
+    app = workflow.compile(checkpointer=memory)
+    app_start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "890"}},
+    )
+    app_end = time.time()
+    app_infernce = app_end - app_start
+    print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
+def run_pipline_synth(query_profread: str, llm):
+    # Neue Funktion, die automatisch llm befüllt
+    time_proofreader_with_llm = partial(time_proofreader, llm=llm)
+    # station_proofread_with_llm = partial(station_proofread, llm=llm)
+    date_proofreader_with_llm = partial(date_proofreader, llm=llm)
+    extracting_json_with_llm = partial(extracting_json, llm=llm)
+    print("run")
+    workflow = StateGraph(state_schema=MessagesState)
+    workflow.add_node("time", time_proofreader_with_llm)
+    workflow.add_node("date", date_proofreader_with_llm)
+    workflow.add_node("json", extracting_json_with_llm)
+
+    workflow.add_edge(START, "time")
+    workflow.add_edge("time", "date")
+    workflow.add_edge("date", "json")
+    workflow.add_edge("json", END)
+
+    memory = MemorySaver()
+    app = workflow.compile(checkpointer=memory)
+    app_start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "333"}},
+    )
+    app_end = time.time()
+    app_infernce = app_end - app_start
+    print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
+def run_pipline_synth_time(query_profread: str, llm):
+    # Neue Funktion, die automatisch llm befüllt
+    time_proofreader_with_llm = partial(time_proofreader, llm=llm)
+    extracting_json_with_llm = partial(extracting_json, llm=llm)
+    print("run")
+    workflow = StateGraph(state_schema=MessagesState)
+    workflow.add_node("time", time_proofreader_with_llm)
+    workflow.add_node("json", extracting_json_with_llm)
+
+    workflow.add_edge(START, "time")
+    workflow.add_edge("time", "json")
+    workflow.add_edge("json", END)
+
+    memory = MemorySaver()
+    app = workflow.compile(checkpointer=memory)
+    app_start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "333"}},
+    )
+    app_end = time.time()
+    app_infernce = app_end - app_start
+    print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
+def run_pipline_synth_date(query_profread: str, llm):
+    # Neue Funktion, die automatisch llm befüllt
+    date_proofreader_with_llm = partial(date_proofreader, llm=llm)
+    extracting_json_with_llm = partial(extracting_json, llm=llm)
+    print("run")
+    workflow = StateGraph(state_schema=MessagesState)
+    workflow.add_node("date", date_proofreader_with_llm)
+    workflow.add_node("json", extracting_json_with_llm)
+
+    workflow.add_edge(START, "date")
+    workflow.add_edge("date", "json")
+    workflow.add_edge("json", END)
+
+    memory = MemorySaver()
+    app = workflow.compile(checkpointer=memory)
+    app_start = time.time()
+    response = app.invoke(
+        {"messages": [HumanMessage(content=query_profread)]},
+        config={"configurable": {"thread_id": "333"}},
+    )
+    app_end = time.time()
+    app_infernce = app_end - app_start
+    print(f"This is the app_infernce_time needed for responding {app_infernce}")
+    print(response)
+    return response
+
+
 def run_pipeline(query_profread: str, llm, stages: list[str]):
     app = build_pipeline_stages(stages, llm)
     start = time.time()
     response = app.invoke(
         {"messages": [HumanMessage(content=query_profread)]},
-        config={"configurable": {"thread_id": "333"}},
+        config={"configurable": {"thread_id": "222"}},
     )
     end = time.time()
     duration = end - start
@@ -399,11 +515,18 @@ def run_pipeline(query_profread: str, llm, stages: list[str]):
 from assistent.helpers.model_downloader import get_repo_rag_model, get_model_id
 
 # Key = llama_3.2_3B
-model_key = "llama_3.2_3B"
-model_id = get_model_id(model_key)
-model_id_cleaned = model_id.replace("/", "_")
-llm = get_repo_rag_model(model_key)
-query = "Ist Samstag was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
-response = run_pipeline(query, llm, ["time"])
-print("response")
-print(response)
+# model_key = "llama_3.2_3B"
+# model_id = get_model_id(model_key)
+# model_id_cleaned = model_id.replace("/", "_")
+# llm = get_repo_rag_model(model_key)
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Pizza Hut um viertel nach zwei."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach zwei? Ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag was frei vom Olympia Satdium um viertel nach neun ?"
+# query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
+# # response = run_pipeline(query, llm, ["time"])
+# response = run_pipeline(query, llm, ["date"])
+# print("response")
+# print(response)

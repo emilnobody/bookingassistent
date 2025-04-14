@@ -10,12 +10,24 @@ def load_json_file(file_path):
         return json.load(file)
 
 
-def load_all_json_files_rag(folder,key):
+def load_all_json_files_rag(folder, key):
     return [
         (filename, json.load(open(os.path.join(folder, filename), encoding="utf-8")))
         for filename in os.listdir(folder)
         if filename.lower().startswith(f"testdatensatz-rag-{key}")
     ]
+
+
+def load_all_json_prediction_files(folder, key):
+    predictions_files = [
+        (filename, json.load(open(os.path.join(folder, filename), encoding="utf-8")))
+        for filename in os.listdir(folder)
+        if filename.lower().endswith(".json")
+        and f"predictions_{key}" in filename.lower()
+    ]
+    print(predictions_files)
+    return predictions_files
+
 
 def load_all_json_files(folder):
     return [

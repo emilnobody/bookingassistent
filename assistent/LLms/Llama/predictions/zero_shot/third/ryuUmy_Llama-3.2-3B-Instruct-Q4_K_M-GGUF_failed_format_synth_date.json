@@ -1,0 +1,22 @@
+[
+    {
+        "query": "Ist der Bürgerbus am 29. September um 12:30 Uhr von Percha - Golfclub nach Großhöhenrain - Schule verfügbar?",
+        "failed_format": "{\n  \"from\": \"Percha - Golfclub\",\n  \"to\": \"Großhöhenrain - Schule\",\n  \"date\": \"30. September\",\n  \"time\": \"nicht verfügbar\""
+    },
+    {
+        "query": "Kann ich eine Fahrt vom Westerham - Schützen- & Trachtenheim nach Unterwertach am 22. Oktober um 11:45 Uhr buchen?",
+        "failed_format": "{\n  \"from\": \"Westerham - Schützen- & Trachtenheim\",\n  \"to\": \"Unterwertach\",\n  \"date\": \"22. Oktober\",\n  \"time\": \"zwanzig fünf Minuten vor elf\""
+    },
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "failed_format": "from: Hauptstraße\nto: Gärtnerplatz\ndate: 15. März\ntime: 15:15"
+    },
+    {
+        "query": "Kann ich am 22. Januar um 15:45 Uhr von Marktplatz Lübeck nach St. Pauli fahren?",
+        "failed_format": "```\n{\n  \"from\": \"Marktplatz Lübeck\",\n  \"to\": \"St. Pauli\",\n  \"date\": \"20. Januar\",\n  \"time\": \"15:00 vor 5 Uhr\"\n}\n```"
+    },
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "failed_format": "from: Hauptstraße\nto: Gärtnerplatz\ndate: 15. März\ntime: 14:30"
+    }
+]
