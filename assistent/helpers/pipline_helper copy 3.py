@@ -179,7 +179,7 @@ def should_continue_time_flow(state: MessagesState):
     last_message = state["messages"][-1].content
     if last_message != "NONE":
         return "continue"
-    return "stop"
+    return "skip"
 
 
 def time_converter(state: MessagesState, llm):
@@ -603,29 +603,29 @@ def run_pipeline(query_profread: str, llm, stages: list[str]):
     return response
 
 
-from assistent.helpers.model_downloader import get_repo_rag_model, get_model_id
+# from assistent.helpers.model_downloader import get_repo_rag_model, get_model_id
 
-# Key = llama_3.2_3B
-model_key = "llama_3.2_3B"
-model_id = get_model_id(model_key)
-model_id_cleaned = model_id.replace("/", "_")
-llm = get_repo_rag_model(model_key)
-query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
-# query = "Pizza Hut um viertel nach zwei."
-# query = "Ist Samstag  was frei vom Olympia Stadium um halb elf ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel acht ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel zehn ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um viertel sieben ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um viertel fünf ich muss vom Hertha Spiel zum Kudamm."
+# # Key = llama_3.2_3B
+# model_key = "llama_3.2_3B"
+# model_id = get_model_id(model_key)
+# model_id_cleaned = model_id.replace("/", "_")
+# llm = get_repo_rag_model(model_key)
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach zwei? Ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag was frei vom Olympia Satdium um viertel nach neun ?"
-query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
-# response = run_pipeline(query, llm, ["time"])
-response = run_pipeline(
-    query, llm, ["time_extract", "time_convert", "time_reduce", "time_replace"]
-)
-print("response")
-print(response)
+# # query = "Pizza Hut um viertel nach zwei."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um halb elf ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel acht ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel zehn ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel sieben ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel fünf ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach zwei? Ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag was frei vom Olympia Satdium um viertel nach neun ?"
+# query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
+# # response = run_pipeline(query, llm, ["time"])
+# response = run_pipeline(
+#     query, llm, ["time_extract", "time_convert", "time_reduce", "time_replace"]
+# )
+# print("response")
+# print(response)
