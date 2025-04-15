@@ -138,23 +138,37 @@ def time_informal_extraction(state: MessagesState, llm):
     prompt_time_knowledge = result.get("results")[0].get("raw_content")
     query = state["messages"][-1].content
     extract_time_prompt = (
-        "You are a NEE-LLM."
+        "You are a NEE-LLM for outwritten german clock time expressions."
         "START of Knowledgebase\n\n"
         "the Knowledgebase for reference not the message:\n"
         f"{prompt_time_knowledge}\n"
         "ENDE of Knowledgebase\n\n"
-        "Task BEGINN:"
-        "The entitie to extract is a infromal clock time expression."
-        # "Your must EXACTLY use these keys: 'time' and not the german word or terms.\n"
-        # "The knowledge for german time expressions are:\n"
-        "Extract ONLY the informal outwritten German time expression from the following message.\n"
-        "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text.\n"
-        "ONLY respond with the outwritten time phrase from the message itself (no extra text, no interpretation,no time expression as number).\n"
-        "if there is a 'Nachmittag' or 'nachmittag' extract it also!"
-        # f"The Message {query}."
+        "**Rules:**\n"
+        "Only extract NONE DIGITS and NONE numericals!\n"
         "If there is no outwritten time expression, respond with 'NONE'.\n"
         "If there is a numerical time expression, respond with 'NONE'.\n"
+        "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text.\n"
     )
+    # extract_time_prompt = (
+    #     "You are a NEE-LLM."
+    #     "START of Knowledgebase\n\n"
+    #     "the Knowledgebase for reference not the message:\n"
+    #     f"{prompt_time_knowledge}\n"
+    #     "ENDE of Knowledgebase\n\n"
+    #     "Task BEGINN:"
+    #     "The entitie to extract is a infromal clock time expression."
+    #     # "Your must EXACTLY use these keys: 'time' and not the german word or terms.\n"
+    #     # "The knowledge for german time expressions are:\n"
+    #     "Extract ONLY the informal outwritten German time expression from the following message.\n"
+    #     "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text.\n"
+    #     "ONLY respond with the outwritten time phrase from the message itself (no extra text, no interpretation, no time expression as number).\n"
+    #     "if there is a 'Nachmittag' or 'nachmittag' extract it also!\n"
+    #     # f"The Message {query}."
+    #     "**Rules:**\n"
+    #     "Only extract NONE DIGITS and NONE numericals!\n"
+    #     "If there is no outwritten time expression, respond with 'NONE'.\n"
+    #     "If there is a numerical time expression, respond with 'NONE'.\n"
+    # )
     start_time = time.time()
     response = llm.create_chat_completion(
         messages=[
@@ -162,7 +176,7 @@ def time_informal_extraction(state: MessagesState, llm):
             {"role": "user", "content": query},
         ],
         max_tokens=3000,
-        temperature=0.5,
+        temperature=0.7,
         top_p=0.1,
         top_k=20,
     )
@@ -327,7 +341,8 @@ def time_replacer(state: MessagesState, llm):
 
 # Datum korrigieren
 def date_proofreader(state: MessagesState, llm):
-    previous = state["messages"]
+    original_qiery = state["messages"][0].content
+    last_message = state["messages"][-1].content
     jahr_string = str(datetime.now().year)
     today = datetime.today()
     print(jahr_string)
@@ -339,7 +354,7 @@ def date_proofreader(state: MessagesState, llm):
         "The knowledge for wich date we have:\n\n"
         f"Today is {current_weekday} the {current_date}\n\n"
         # "Your task is to check the Message for incomplete or informal expressions of a certain date including weekkday expression and replace them with the offical ISO 8601 date format .\n\n"
-        "Your task is to identify and replace any informal, relative, or incomplete expressions of dates with their correct and complete ISO 8601 format (YYYY-MM-DD), based on today's date.\n"
+        "Your task is to identify and replace any informal, relative, incomplete or outwritten expressions of dates with their correct and complete ISO 8601 format (YYYY-MM-DD), based on today's date.\n"
         # "Your task is to detect any vague, relative or weekday-only date references and replace them with the corresponding exact date in ISO 8601 format (YYYY-MM-DD), based on today's date.\n"
         # f"calculate the exact date of the next occurrence of this weekday and replace the informal expression with the ISO 8601 format.\n\n"
         "Calculate the specific calendar date if a weekday is mentioned without a full date.\n"
@@ -348,16 +363,18 @@ def date_proofreader(state: MessagesState, llm):
         "1. Response ONLY the corrected user question without any explanations or additional text.\n"
         "2. Output MUST be a single sentence identical to the original, except for corrected expressions of date.\n"
         "3. Always replace relative weekday-based expressions with the exact ISO 8601 date.\n"
+        "5. Date must have a year and month has to be a number!"
         "4. Always use the ISO 8601 format (YYYY-MM-DD) for all dates.\n"
     )
 
     token_and_infrence_display_llcpp(llm, profreader_prompt_date, jahr_string)
+    usermassage = original_qiery if last_message == "NONE" else last_message
     # Inference und Run
     start_time = time.time()
     response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": profreader_prompt_date},
-            {"role": "user", "content": state["messages"][-1].content},
+            {"role": "user", "content": usermassage},
         ],
         max_tokens=2000,
         temperature=0.7,
@@ -440,9 +457,9 @@ def build_pipeline_stages(stages: list[str], llm):
         current_stage = stages[i]
         next_stage = stages[i + 1]
         # Check for conditional edge and condition function
-        
+
         stageprefix = current_stage.split("_")[0] + "_"
-        #Hier hole ich mir die konditionale Funktion
+        # Hier hole ich mir die konditionale Funktion
         condition_func = conditional_edges.get((current_stage, next_stage))
         if condition_func:
             # Hier kannst du nach Bedarf deine Bedingung auswerten
@@ -451,7 +468,12 @@ def build_pipeline_stages(stages: list[str], llm):
                 condition_func,
                 {
                     "continue": next_stage,
-                    "skip": next((stagename for stagename in stages[i+1:] if not stagename.startswith(stageprefix)),
+                    "skip": next(
+                        (
+                            stagename
+                            for stagename in stages[i + 1 :]
+                            if not stagename.startswith(stageprefix)
+                        ),
                         END,
                     ),  # Findet den nächsten, der nicht das 'stageprefix' hat, oder END
                 },
@@ -603,14 +625,14 @@ def run_pipeline(query_profread: str, llm, stages: list[str]):
     return response
 
 
-# from assistent.helpers.model_downloader import get_repo_rag_model, get_model_id
+from assistent.helpers.model_downloader import get_repo_rag_model, get_model_id
 
 # # Key = llama_3.2_3B
 # model_key = "llama_3.2_3B"
 # model_id = get_model_id(model_key)
 # model_id_cleaned = model_id.replace("/", "_")
 # llm = get_repo_rag_model(model_key)
-# query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
+# # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
 # # query = "Pizza Hut um viertel nach zwei."
 # # query = "Ist Samstag  was frei vom Olympia Stadium um halb elf ich muss vom Hertha Spiel zum Kudamm."
 # # query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
@@ -622,10 +644,20 @@ def run_pipeline(query_profread: str, llm, stages: list[str]):
 # # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
 # # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach zwei? Ich muss vom Hertha Spiel zum Kudamm."
 # # query = "Ist Samstag was frei vom Olympia Satdium um viertel nach neun ?"
-# query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
+# # query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
 # # response = run_pipeline(query, llm, ["time"])
+
+# # Failed aber json in time JSON RAG
+# # query = (
+# #     "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+# # )
+# # query="Ich möchte um 12 am Montag von München nach Berlin fahren."
+# # query = "Ich möchte am 10. Juli um 16:00 Uhr von Berlin Hauptbahnhof nach Potsdamer Platz fahren."
+# # query="Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen."
+
+
 # response = run_pipeline(
-#     query, llm, ["time_extract", "time_convert", "time_reduce", "time_replace"]
+#     query, llm, ["time_extract", "time_convert", "time_reduce", "time_replace", "date"]
 # )
 # print("response")
 # print(response)

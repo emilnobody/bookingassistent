@@ -6,7 +6,7 @@ from assistent.helpers.regularExpression import (
     extract_text_after_think,
 )
 from assistent.helpers.model_downloader import get_repo_model, get_model_id
-from assistent.helpers.pipline_helper import run_pipeline
+from assistent.helpers.pipline_helper_copy_3 import run_pipeline
 import assistent.config as config
 
 # from langchain.schema import AIMessage
@@ -213,36 +213,43 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
     filename = ground_truth_file[0]
     # Die zu testenden Pipeline-Varianten
     # userdata mit der liste[station,json] [time,json] [date,json] [station,time,date,json] durchgeführt werden
+    # time stages
+    time_stages = ["time_extract", "time_convert", "time_reduce", "time_replace"]
+
     pipelines = {
         "station": ["station", "json"],
-        "time": ["time", "json"],
+        "time": time_stages + ["json"],
         "date": ["date", "json"],
-        "time_date": ["time", "date", "json"],
-        "all": ["station", "time", "date", "json"]
+        "time_date": time_stages + ["date", "json"],
+        "all": ["station"] + time_stages + ["date", "json"],
     }
     # Enthält die query daten Query- und Entitäten-Json
     ground_truth_data = ground_truth_file[1]
     # print(ground_truth_data)
     if "synth" in filename:
-    # sync mit der liste [time,json] [date,json] [time,date,json]durchgeführt werden
+        # sync mit der liste [time,json] [date,json] [time,date,json]durchgeführt werden
         # Die zu testenden Pipeline-Varianten
         pipelines = {
             # "station": ["station", "json"],
-            "time": ["time", "json"],
+            "time": time_stages + ["json"],
             "date": ["date", "json"],
-            "time_date": ["time", "date", "json"],
+            "time_date": time_stages+["date", "json"],
             # "all": ["station", "time", "date", "json"]
-        } 
-    
+        }
+
     for name, steps in pipelines.items():
-        predictions=[]
+        predictions = []
         failed_format = []
-        failed_format_file = create_failed_format_file_path(llm_prediction_folder, modelkey, shot, f"synth_{name}")
-        predictions_file = create_prediction_file_path(llm_prediction_folder, modelkey, shot, f"synth_{name}")
+        failed_format_file = create_failed_format_file_path(
+            llm_prediction_folder, modelkey, shot, f"synth_{name}"
+        )
+        predictions_file = create_prediction_file_path(
+            llm_prediction_folder, modelkey, shot, f"synth_{name}"
+        )
         # reasoning_file = create_reasoning_file_path(
         #     llm_prediction_folder, modelkey, filename
         # )
-        #für jeden query
+        # für jeden query
         for entry in ground_truth_data:
             query = entry["query"]
             output = run_pipeline(query, llm, steps)
@@ -281,9 +288,3 @@ def run_rag_predictions(ground_truth_file, llm_prediction_folder, modelkey, llm)
         #     print(
         #         f"Reasoning-Inhalte wurden erfolgreich in '{reasoning_file}' gespeichert."
         #     )
-
-
-
-
-
-
