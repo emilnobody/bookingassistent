@@ -95,113 +95,8 @@ def time_proofreader(state: MessagesState, llm):
     # Zusammenfügen der formatierten Textteile
     formatted_text = "\n".join(formatted_text)
     # lade Prompt für
-    # profreader_prompt_time = (
-    #     "You are a meticulous German 'Proofreading Expert' for time expressions.\n\n"
-    #     "You have the knowledge of the following German time expression rules written in German:\n\n"
-    #     f"{formatted_text}\n\n"
-    #     # "Your task is to identify in the incomming message the informal or relative time expressions and replace them with the corresponding numerical time in HH:MM format.\n"
-    #     "Your task is to identify in the incomming message the informal or relative time expressions and replace them with the corresponding numerical time in HH:MM format.\n"
-    #     "Do not change or correct formal/numerical time expressions. Only modify informal (text expression of time) time expressions.\n\n"
-    #     "**Rules:**\n"
-    #     "1. Respond ONLY with the corrected user query, without any explanations or additional text.\n"
-    #     "2. Output MUST be a single sentence identical to the original, except for corrected time expressions.\n"
-    #     "3. Do NOT change formal time expressions only modify informal ones \n"
-    #     "4. Always use the HH:MM format for all time expressions.\n"
-    #     "5. analyse the knowledge before responding."
-    #     "5. the new text must have only numerical time expressions no expression of time in textual."
-    # )
-
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of day time.\n\n"
-    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
-    #     f"{formatted_text}\n\n"
-    #     "Your task is to find and change the time expressions of query into the corresponding numeric clock times.\n"
-    #     "you get the corresponding numeric time in the reference knowlegde Table."
-    #     # "use the refference of knowledge with the table given to do it."
-    #     # "The rest of the text should remain unchanged\n\n"
-    #     # "For time expressions, you should convert informal expressions like 'Viertel nach', 'halb', 'drei viertel', etc., into their corresponding numeric time representations.\n"
-    #     # "For example, 'Viertel nach fünf' should become '5:15' and 'drei viertel 11' should become '10:45'. You should follow this pattern for all time expressions.\n\n"
-    #     # "no need to wirte an Answer to the actual contex of the message!\n"
-    #     # "So do not answer to the Message and do not comment to it either!\n"
-    # )
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of day time.\n\n"
-    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     "Your task is to review the following text and convert only the time references into numeric clock times, ensuring they are accurately represented in the correct informal German style.\n"
-    #     "The rest of the text should remain unchanged, and the entire output should be in correct, natural German.\n\n"
-    #     "For time expressions, you should convert informal expressions like 'Viertel nach', 'halb', 'drei viertel', etc., into their corresponding numeric time representations.\n"
-    #     "For example, 'Viertel nach fünf' should become '5:15' and 'drei viertel 11' should become '10:45'. You should follow this pattern for all time expressions.\n\n"
-    #     "Please provide the corrected text while keeping it in proper German grammar and formatting."
-    #     "Here is the text to review:\n"
-    # )
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of day time .\n\n"
-    #     # "The knowledge for german time expressions are:\n\n"
-    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     "the knowledge above teached you the numerical meaning of 'Viertel', 'halb', 'drei virtel' and so on are related to the min ."
-    #     " now you know the terms and meaning of 'Viertel', 'halb', 'drei virtel' and so on. "
-    #     "trim the text!"
-    #     "**Rules:**\n"
-    #     "- verify the clock times in the message \n"
-    #     "- Check again if your Response is A completly a NUMERICAL clock representation !!!! \n\n"
-    #     # "3. Check the Übersicht: examples for references before responding!\n"
-    #     # "1. Only verify the clock times in the message.\n"
-    #     "if no 'nachmittag' is added, chose the numerical 'vormittag' representation.\n"
-    #     "Your task is to finde German informal expressions of a certain time and correct this one with the numerical representation of time that a clock would display.\n\n"
-    #     # "2. Your Response MUST be the numerical representation of the time found in the message.\n"
-    #     # "2. Response MUST be identical to the original.\n"
-    #     # "3. Response ONLY the corrected user question without any explanations or additional text.\n"
-    #     # "3. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
-    #     # "4. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
-    #     # "5. Only 'HH:MM UHR' that could appear on a digital clock face.\n"
-    # )
-    # profreader_prompt_time = (
-    #     "You are a specialized German proofreading module.\n"
-    #     "You are strictly limited to identifying and correcting expressions in a sentence that represent a specific time of day.\n\n"
-    #     "Definition of 'time of day':\n"
-    #     "- An expression that could be shown on a 12-hour or 24-hour clock.\n"
-    #     "- Examples include hours and minutes (but no actual examples are shown here).\n\n"
-    #     "Forbidden:\n"
-    #     "- Do NOT correct grammar, spelling, punctuation, or word order.\n"
-    #     "- Do NOT correct names or place names.\n"
-    #     "- Do NOT explain anything.\n"
-    #     "- Do NOT modify or comment on any parts of the sentence unless they represent a clock-readable time of day.\n\n"
-    #     "Output:\n"
-    #     "- Return ONLY the sentence, with clock-readable times corrected to standard format.\n"
-    #     "- Leave every other word and structure untouched.\n"
-    # )
-    # profreader_prompt_time = (
-    #     # "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-    #     # "The knowledge for german time expressions are:\n\n"
-    #     f"{formatted_text}\n\n"
-    #     "Your task is to identify and correct only expressions that represent a specific time of day**, meaning values that a clock (digital or analog) could display, such as hours and minutes.\n"
-    #     "You must ignore all other kinds of time-related expressions (e.g., days, dates, durations, sequences, or general references like 'later', 'soon', 'Saturday').\n\n"
-    #     "Do not correct grammar, spelling, or stylistic issues. Do not explain your changes. Do not alter names or sentence structure.\n\n"
-    #     "Your output should be only the corrected sentence, with only valid time-of-day expressions updated into standard, clock-readable form. Leave all other parts exactly as they are.\n"
-    # )
-    # Original
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-    #     "The knowledge for german time expressions are:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
-    #     "**Rules:**\n"
-    #     "1. Response ONLY the corrected user question without any explanations or additional text.\n"
-    #     "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
-    #     "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
-    # )
-    # #Das Klappt mit virtel
-    profreader_prompt_time = (
-        "You are a language model that only repeats the user's input, which is entirely in German. "
-        "The following is your reference knowledge for informal time expressions in German:\n\n"
-        f"{prompt_time_knowledge}\n\n"
-        "make only time expressions phrases words into UPPERCASE word . "
-        # "viertel nach eins is for sure in the text.\n"
-        "double check the Text again for this phrases."
-    )
-    #WÜRDE ES SO LASSEN KEIN BOCK MEHR!
+ 
+    #Letzter Stand
     profreader_prompt_time = (
         "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
         "The knowledge for german time expressions are:\n\n"
@@ -217,31 +112,6 @@ def time_proofreader(state: MessagesState, llm):
         "2. It is forbidden to change a number into a out-written times expressions!\n"
         "3. Output MUST be a single sentence identical to the original, except for corrected expressions of time.\n"
     )
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     # "Please identify and correct only those time expressions in the following German sentence that represent specific times of day — values that are part of the reference knowledge. Do not change any other part of the text.\n"
-    #     "trim the text then do the task. do not change the original text! just replace!"
-    #     "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
-    #     "**Rules:**\n"
-    #     "1. Response ONLY the corrected user question without any explanations or additional text.\n"
-    #     # "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
-    #     # "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
-    # )
-    # Das Klappt mit virtel
-    # profreader_prompt_time = (
-    #     "You are a German meticulous 'Proofreading Expert' for German formal and informal expressions of time .\n\n"
-    #     "The following is your reference knowledge for informal time expressions in German:\n\n"
-    #     f"{prompt_time_knowledge}\n\n"
-    #     # "Please identify and correct only those time expressions in the following German sentence that represent specific times of day — values that are part of the reference knowledge. Do not change any other part of the text.\n"
-    #     "trim the text then do the task. do not change the original text! just replace!"
-    #     "Your task is to check the Mesage for informal expressions of a certain time and replace them with the numerical representation of time.\n\n"
-    #     "**Rules:**\n"
-    #     "1. Response ONLY the corrected user question without any explanations or additional text.\n"
-    #     # "2. Output MUST be a single sentence identical to the original, except for corrected numerical expressions of time.\n"
-    #     # "3. Only correct informal expressions to numerica, formmal numerical time expressions let them unchanged.\n"
-    # )
 
     token_and_infrence_display_llcpp(llm, profreader_prompt_time, prompt_time_knowledge)
     # Inference und Run
@@ -259,10 +129,6 @@ def time_proofreader(state: MessagesState, llm):
     end_time = time.time()
     infernce_time = end_time - start_time
     print(f"This is the infernce_time needed for spellchecking {infernce_time}")
-
-    # print(response["choices"][0]["message"]["content"])
-    # print(response["usage"])
-
     response = response["choices"][0]["message"]["content"]
     return {"messages": response}
 
