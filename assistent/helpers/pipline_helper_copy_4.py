@@ -133,28 +133,53 @@ def time_proofreader(state: MessagesState, llm):
 
 
 def time_informal_extraction(state: MessagesState, llm):
-    url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
-    # url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
+    
+    query = state["messages"][-1].content
+    # hat zuletzt noch funktioniert ausser drei viertel zehn LAST STAND
+    url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
     result = extract_website_content(url)
     prompt_time_knowledge = result.get("results")[0].get("raw_content")
+    # Struturiere die Knowladgebase für das LLM
     pattern = r"((?:\d{2}:\d{2} ){2}(?:[^\d\s]+(?: [^\d\s]+)*))(?= \d{2}:\d{2}|\Z)"
     replacement = r"\1\n\n"
     structured = regex.sub(pattern, replacement, prompt_time_knowledge)
-    query = state["messages"][-1].content
-    # hat zuletzt noch funktioniert ausser drei viertel zehn LAST STAND
     extract_time_prompt = (
-        "extract all german words that are outwritten informal German clock time expressions."
-        "Respond with all of them! (no explanation, no comments)."
-        "always double check if after 'drei' comes 'Viertel' or 'viertel'correct the output!\n"
-        "Dont correct the output if no 'drei' appear at all!\n"
-        "Do not add any WORDS to the expression."
-        # "The output MUST be WORDS."
+        "**ROLE**:\n\n"
+        "You are a german Expert for German formal and informal expressions of time.\n"
+        "You also always write down the found expression in one line."
+        
+        "**GERMAN GRAMAR FOR TIME EXPRESSION**:\n\n"
+        "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte] is the structure of the tabele \n"
+        f"{structured} \n"
+
+
+        "**TASK**:\n\n"
+        "search and extract all german words that are outwritten informal German clock-time-expressions from the QUERY.\n"
+        "finde the exact words in the table!\n"
+        # "Response them as they appears in the QUERY! (no explanation, no comments).\n"
+        "before responding compare again with the Query!\n"
+        "before responding compare again with the Query and check if 'drei viertel' apears!\n"
+        # "before responding compare again with the Query and  double check if 'drei viertel' apears!\n"
+        "If there is no outwritten time expression, respond only with 'NONE'(no explanation, no comments).\n"
+        "If there is a numerical time expression, respond only with 'NONE'(no explanation, no comments).\n"
+        
+        "**RULE FOR RESPONSE**:\n\n"
+        "Your Output must be the time expression from the Querry not a created one!\n" 
         # "Only extract NONE DIGITS and NONE numericals!\n"
-        # "Respond only with them alone. (no explanation, no context)."
-        # "WE ignore wrong grammar!"
-        # "I forbidd you to change the grammar"
-        "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text."
-        "REMBER ONLY 'extract all german words that are outwritten informal German clock time expressions.' ."
+        "The Response MUST have the same word as it apears in the Query sentence no more no less!\n"
+        
+
+        "**QUERY**: "
+        f"{query}\n"
+        # "Dont correct the output if no 'drei' or 'halb' appear at all!\n"
+        # "Do not add any WORDS to the expression."
+        # "search and extract all outwritten informal German clock time expressions out of the sentence below."
+        # # "The output MUST be WORDS."
+        # # "Respond only with them alone. (no explanation, no context)."
+        # # "WE ignore wrong grammar!"
+        # # "I forbidd you to change the grammar"
+        # "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text."
+        # "REMBER ONLY 'extract all german words that are outwritten informal German clock time expressions.' ."
     )
     # extract_time_prompt = (
     #     "You are a NEE-LLM for outwritten german clock time expressions."
@@ -214,7 +239,7 @@ def time_informal_extraction(state: MessagesState, llm):
     response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": extract_time_prompt},
-            {"role": "user", "content": query},
+            # {"role": "user", "content": query},
         ],
         max_tokens=3000,
         temperature=0.5,
@@ -242,52 +267,20 @@ def time_converter(state: MessagesState, llm):
     url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
     result = extract_website_content(url)
     prompt_time_knowledge = result.get("results")[0].get("raw_content")
+    # Struturiere die Knowladgebase für das LLM
     pattern = r"((?:\d{2}:\d{2} ){2}(?:[^\d\s]+(?: [^\d\s]+)*))(?= \d{2}:\d{2}|\Z)"
     replacement = r"\1\n\n"
     structured = regex.sub(pattern, replacement, prompt_time_knowledge)
 
-    # raw_str=prompt_time_knowledge
-    # raw_text = result["results"][0]["raw_content"]
-
-    # # Startpunkt: "Grammatik\nUhrzeit: informell (2)"
-    # start = raw_text.find("Grammatik\nUhrzeit: informell (2)")
-
-    # # Endpunkt: "Footer"
-    # end = raw_text.find("\xa0\nWeiter")
-
-    # # Extrahiere den relevanten Abschnitt
-    # neu = raw_text[start:end].strip()
-
-    time_phrase = state["messages"][-1].content.lower()
-    # time_phrase = state["messages"][-1].content
-
-    # time_phrase = state["messages"][-1].content.upper()
-    # query = "wie sieht halb zwei als numerischer (HH:mm) laut deines Wissen aus?"
-    # query = "wie sieht halb eins als (HH:MM)  deines Wissen nach aus?"
-    # query = "wie sieht halb zwei als (HH:MM)  deines Wissen nach aus?"
-    # query = "wie sieht halb drei als (HH:MM)  deines Wissen nach aus?"
-    # query = "wie sieht halb vier als (HH:MM)  deines Wissen nach aus?"
-    # query = "wie sieht halb fünf als (HH:MM)  deines Wissen nach aus?"
-    # query = "wie sieht halb sechs als numersiche(HH:MM) Darstelung aus kurze Antwort bitte?"
-    # query = "wie sieht halb sieben als (HH:MM)  deines Wissen nach aus?"
-    # query = "wie sieht halb zwei als (HH:MM) laut deines Wissen aus?"
-    # query = "wie sieht halb neun als (HH:MM) laut der deutschen Regel aus?"
-    # query = "wie wird halb neun als (HH:MM) dargestellt wenn man sich an die 'RULES' hält?"
-    # query = "wie sieht drei viertel sechs als (HH:MM) laut deines Wissen aus"
-    # query = "Wenn die Uhr drei viertel sechs zeigt, kannst du das in (HH:MM) angeben laut deines Wissen"
-    # query = f"Wenn die Uhr {time_phrase} zeigt, kannst du das in (HH:MM) angeben laut deines Wissen"
-    # query = f"Wenn die Uhr {time_phrase} zeigt, wie wird das laut deutscher Zeitangabe in (HH:mm) angezeigt?"
-    # query = f"die Uhr zeigt {time_phrase}!"
-    # query = "wie sieht drei viertel sechs als (HH:MM) In einigen Teilen Deutschlands aus ?"
-    # query = f"wie sieht {time_phrase} als (HH:MM) laut deines Wissen aus?"
-
+    # Der zeitausdruck
+    time_phrase_lower = state["messages"][-1].content.lower()
+    # time_phrase = regex.sub(r'^um\s+', '', time_phrase_lower)
+    time_phrase = regex.sub(r'^"?um\s+', '', time_phrase_lower).strip('"')
+    # Der Hilfsquery um die Anfrage so präzise wie möglich zu halten!
     query = f"Was ist die Uhrzeit '{time_phrase}' als (HH:mm)!"
-    # query = f"Konvertiere nach den deutsche Regeln die Uhrzeit {time_phrase} als (HH:mm)!"
-    # query = f"Finde {time_phrase} in der Tabelle mit den beiden representationen,\n"
-    # query = f"search {time_phrase} in the table for the 1:1 phrase,\n"
-    # Alles mit halb geht ausser halb zwei
+
+    # Der Prompt
     convert_time_prompt = (
-        # f"You are a German language teacher.\n\n"
         "START of Knowledgebase\n\n"
         # "**START of RULES**\n\n"
         # "this are your RULES :\n"
@@ -295,152 +288,23 @@ def time_converter(state: MessagesState, llm):
         # f"{prompt_time_knowledge}\n"
         f"{structured}\n"
         "**ENDE of RULES**\n\n"
-        # "Based on the RULES you will know if the keywords indicates for a 'informell' expression and repsonse the correct (hh:mm).\n"
-        # "Based on your RULES you must interpret correctly into (HH:mm) representation.\n"
-        # " interpret correctly into (HH:mm) representation.\n"
-        # "if 'nach' is not part don't apply it to the logic!"
-        # "do not use expressions that are not in the Question!"
-        # "If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1.\n"
-        # "YOU MUST RESPONSE WITH THE MORNING REPRESENTATION NOTHING ELSE!"
-        # f"Informal expression:\n{query}\n"
-        # "finde die Uhrzeit in der Tabelle und gib den geringeren numerischen Wert zurück es sei den Nachmittag wurde angegeben in der Frage!\n"
-        # "gebe die richtige Uhrzeit wieder.\n"
-        # "if you see 'drei Viertel' they mean the houre before with'viertel nach'."
         "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte] is the structure of the tabele "
         "always double check if after 'drei' comes 'Viertel' or 'viertel' correct the output!\n"
         # "Always take the value of [digitale Zeit 2] only if somehow the text indicates afternoon take [digitale Zeit 1]."
         "Respond ONLY with the resulting time (no explanation, no context)."
         f"{query}\n"
-        # "Denke intern über die Bedeutung nach, gib aber **nur** das Endergebnis im Format HH:MM aus. "
-        # "Gehe Intern die richtige Rechnung noch einmal durch bevor du Antwortest."
-        # "Gehe Intern die richtige Lösung noch einmal durch bevor du Antwortest."
-        # "Gib mir nur das Ergebnis."
-        # "Respond ONLY with the resulting time (no explanation or comments)."
     )
-    # )
-    message_prevous_extracted = state["messages"][-2].content
-    message_prevous = state["messages"][-1].content
+
+    # Hier wird Kontrolliert ob übersprungen werden kann weil die Uhrzeit beriets richtig angegeben ist
     if time_phrase == "NONE":
         return {"messages": response}
     start_time = time.time()
     response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": convert_time_prompt},
-            # {"role": "user", "content": state["messages"][-1].content},
         ],
         max_tokens=250,
-        # max_tokens=3000,
         temperature=0.1,
-        top_p=0.1,
-        top_k=20,
-    )
-    end_time = time.time()
-    infernce_time = end_time - start_time
-    print(f"This is the infernce_time needed for spellchecking {infernce_time}")
-    response = response["choices"][0]["message"]["content"]
-    return {"messages": response}
-
-
-# def time_converter(state: MessagesState, llm):
-#     url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
-#     result = extract_website_content(url)
-#     prompt_time_knowledge = result.get("results")[0].get("raw_content")
-#     raw_text = result["results"][0]["raw_content"]
-
-#     # Startpunkt: "Grammatik\nUhrzeit: informell (2)"
-#     start = raw_text.find("Grammatik\nUhrzeit: informell (2)")
-
-#     # Endpunkt: "Footer"
-#     end = raw_text.find("Footer")
-
-#     # Extrahiere den relevanten Abschnitt
-#     neu = raw_text[start:end].strip()
-
-#     time_phrase = state["messages"][-1].content
-#     # Alles mit halb geht ausser halb zwei
-#     convert_time_prompt = (
-#         f"You are a German time conversion expert.\n\n"
-#         "START of Knowledgebase\n\n"
-#         "this is just the Knowledgebase not the message:\n"
-#         # 'In German, "Halb X" means half an hour before X.\n'
-#         f"{neu}\n"
-#         "ENDE of Knowledgebase\n\n"
-#         "Your task is to interpret german informal time expressions into (HH:MM)."
-#         # "If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1.\n"
-#         "YOU MUST RESPONSE WITH THE MORNING REPRESENTATION NOTHING ELSE!"
-#         "If no specific time of day (morning/afternoon) is mentioned, assume the time refers to **morning (Vormittag) number** unless context suggests otherwise.\n"
-#         f"Informal expression:\n'{time_phrase}'\n"
-#         "Respond ONLY with the interprete time (no explanation, no context)."
-#     )
-#     message_prevous_extracted = state["messages"][-2].content
-#     message_prevous = state["messages"][-1].content
-#     if time_phrase == "NONE":
-#         return {"messages": response}
-#     start_time = time.time()
-#     response = llm.create_chat_completion(
-#         messages=[
-#             {"role": "system", "content": convert_time_prompt},
-#             # {"role": "user", "content": state["messages"][-1].content},
-#         ],
-#         max_tokens=250,
-#         # max_tokens=3000,
-#         temperature=0.7,
-#         top_p=0.1,
-#         top_k=20,
-#     )
-#     end_time = time.time()
-#     infernce_time = end_time - start_time
-#     print(f"This is the infernce_time needed for spellchecking {infernce_time}")
-#     response = response["choices"][0]["message"]["content"]
-#     return {"messages": response}
-
-
-def time_reducer(state: MessagesState, llm):
-    url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
-    result = extract_website_content(url)
-    prompt_time_knowledge = result.get("results")[0].get("raw_content")
-
-    original = state["messages"][0].content
-    old_time_informal = state["messages"][-2].content
-    new_time = state["messages"][-1].content
-
-    reduce_time_prompt = (
-        "START of Knowledgebase\n\n"
-        "we have (HH:MM) the command reduce by 1 hour  stands vor the HH part -> 10 reduce by 1 would be 9 in the HH Part."
-        "this is just the Knowledgebase not the message:\n"
-        "ENDE of Knowledgebase\n\n"
-        "If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1. (e.g. 5:30 would be reduced to 4:30) \n"
-        "If the 'informal expression' contains excatly 'nach', or 'Viertel', then DO NOT reduce the time by 1 hour and the new time will STAY the old time(e.g. 10:15 will stay 10:15).\n"
-        # "Your task is to calculate the time.\n\n"
-        "Your task is to reduce the time under given rules.\n\n"
-        "**Rules:**\n"
-        # "- Ignore case differences when searching for the informal time expression in the sentence.\n"
-        "Only reduce  based on the  value of 'time to calculate:', NOT not interpret or convert based on 'informal expression'.\n"
-        # f"informal expression: '{old_time_informal}\n"
-        f"time to calculate: {new_time}.\n"
-        "Only Respond with the reduced time after reducing (no explanation, no context)."
-        # "Only Respond after calculation with the time (no explanation, no context)."
-    )
-    # reduce_time_prompt = (
-    #     "Your task is to calculate the time.\n\n"
-    #     "**Rules:**\n"
-    #     # "'Drei Viertel' and 'Viertel' are NOT THE SAME!\n"
-    #     # "- If the 'informal expression' contains 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the time by 1 hour.\n"
-    #     "- If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1. (e.g. 5:30 would be reduced to 4:30) \n"
-    #     "- If the 'informal expression' contains excatly 'nach', or 'Viertel', then DO NOT reduce the time by 1 hour and the new time will STAY the old time(e.g. 10:15 will stay 10:15).\n"
-    #     # "- Ignore case differences when searching for the informal time expression in the sentence.\n"
-    #     "- Only calculate the based on the  value of 'time to calculate:', NOT not interpret or convert based on 'informal expression'.\n"
-    #     f"informal expression: '{old_time_informal}\n"
-    #     f"time to calculate: {new_time}.\n"
-    #     "Only Respond after calculation with the time (no explanation, no context)."
-    # )
-    start_time = time.time()
-    response = llm.create_chat_completion(
-        messages=[
-            {"role": "system", "content": reduce_time_prompt},
-        ],
-        max_tokens=3000,
-        temperature=0.5,
         top_p=0.1,
         top_k=20,
     )
@@ -587,7 +451,7 @@ def build_pipeline_stages(stages: list[str], llm):
         "time": partial(time_proofreader, llm=llm),
         "time_extract": partial(time_informal_extraction, llm=llm),
         "time_convert": partial(time_converter, llm=llm),
-        "time_reduce": partial(time_reducer, llm=llm),
+        # "time_reduce": partial(time_reducer, llm=llm),
         "time_replace": partial(time_replacer, llm=llm),
         "date": partial(date_proofreader, llm=llm),
         # "date_extract": partial(date_proofreader, llm=llm),
@@ -683,91 +547,6 @@ def run_pipline(query_profread: str, llm):
     return response
 
 
-def run_pipline_synth(query_profread: str, llm):
-    # Neue Funktion, die automatisch llm befüllt
-    time_proofreader_with_llm = partial(time_proofreader, llm=llm)
-    # station_proofread_with_llm = partial(station_proofread, llm=llm)
-    date_proofreader_with_llm = partial(date_proofreader, llm=llm)
-    extracting_json_with_llm = partial(extracting_json, llm=llm)
-    print("run")
-    workflow = StateGraph(state_schema=MessagesState)
-    workflow.add_node("time", time_proofreader_with_llm)
-    workflow.add_node("date", date_proofreader_with_llm)
-    workflow.add_node("json", extracting_json_with_llm)
-
-    workflow.add_edge(START, "time")
-    workflow.add_edge("time", "date")
-    workflow.add_edge("date", "json")
-    workflow.add_edge("json", END)
-
-    memory = MemorySaver()
-    app = workflow.compile(checkpointer=memory)
-    app_start = time.time()
-    response = app.invoke(
-        {"messages": [HumanMessage(content=query_profread)]},
-        config={"configurable": {"thread_id": "333"}},
-    )
-    app_end = time.time()
-    app_infernce = app_end - app_start
-    print(f"This is the app_infernce_time needed for responding {app_infernce}")
-    print(response)
-    return response
-
-
-def run_pipline_synth_time(query_profread: str, llm):
-    # Neue Funktion, die automatisch llm befüllt
-    time_proofreader_with_llm = partial(time_proofreader, llm=llm)
-    extracting_json_with_llm = partial(extracting_json, llm=llm)
-    print("run")
-    workflow = StateGraph(state_schema=MessagesState)
-    workflow.add_node("time", time_proofreader_with_llm)
-    workflow.add_node("json", extracting_json_with_llm)
-
-    workflow.add_edge(START, "time")
-    workflow.add_edge("time", "json")
-    workflow.add_edge("json", END)
-
-    memory = MemorySaver()
-    app = workflow.compile(checkpointer=memory)
-    app_start = time.time()
-    response = app.invoke(
-        {"messages": [HumanMessage(content=query_profread)]},
-        config={"configurable": {"thread_id": "333"}},
-    )
-    app_end = time.time()
-    app_infernce = app_end - app_start
-    print(f"This is the app_infernce_time needed for responding {app_infernce}")
-    print(response)
-    return response
-
-
-def run_pipline_synth_date(query_profread: str, llm):
-    # Neue Funktion, die automatisch llm befüllt
-    date_proofreader_with_llm = partial(date_proofreader, llm=llm)
-    extracting_json_with_llm = partial(extracting_json, llm=llm)
-    print("run")
-    workflow = StateGraph(state_schema=MessagesState)
-    workflow.add_node("date", date_proofreader_with_llm)
-    workflow.add_node("json", extracting_json_with_llm)
-
-    workflow.add_edge(START, "date")
-    workflow.add_edge("date", "json")
-    workflow.add_edge("json", END)
-
-    memory = MemorySaver()
-    app = workflow.compile(checkpointer=memory)
-    app_start = time.time()
-    response = app.invoke(
-        {"messages": [HumanMessage(content=query_profread)]},
-        config={"configurable": {"thread_id": "333"}},
-    )
-    app_end = time.time()
-    app_infernce = app_end - app_start
-    print(f"This is the app_infernce_time needed for responding {app_infernce}")
-    print(response)
-    return response
-
-
 def run_pipeline(query_profread: str, llm, stages: list[str]):
     app = build_pipeline_stages(stages, llm)
     start = time.time()
@@ -795,7 +574,7 @@ llm = get_repo_rag_model(model_key)
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb drei ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb zehn ich muss vom Hertha Spiel zum Kudamm."
-query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom Hertha Spiel zum Kudamm."
+# query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel acht ich muss vom Hertha Spiel zum Kudamm."
 
 # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel zehn ich muss vom Hertha Spiel zum Kudamm."
@@ -804,20 +583,20 @@ query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom H
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach zwei? Ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag was frei vom Olympia Satdium um viertel nach neun ?"
-# query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
+query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
 # response = run_pipeline(query, llm, ["time"])
 
 # Failed aber json in time JSON RAG
-# query = (
-#     "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
-# )
+query = (
+    "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+)
 # query="Ich möchte um 12 am Montag von München nach Berlin fahren."
 # query = "Ich möchte am 10. Juli um 16:00 Uhr von Berlin Hauptbahnhof nach Potsdamer Platz fahren."
-# query="Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen."
+query="Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen."
 
 
 response = run_pipeline(
-    query, llm, ["time_extract", "time_convert", "time_reduce", "time_replace", "date"]
+    query, llm, ["time_extract", "time_convert", "time_replace", "date","json"]
 )
 print("response")
 print(response)
