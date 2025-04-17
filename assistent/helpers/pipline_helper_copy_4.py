@@ -133,7 +133,7 @@ def time_proofreader(state: MessagesState, llm):
 
 
 def time_informal_extraction(state: MessagesState, llm):
-    
+
     query = state["messages"][-1].content
     # hat zuletzt noch funktioniert ausser drei viertel zehn LAST STAND
     url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
@@ -147,28 +147,32 @@ def time_informal_extraction(state: MessagesState, llm):
         "**ROLE**:\n\n"
         "You are a german Expert for German formal and informal expressions of time.\n"
         "You also always write down the found expression in one line."
-        
+        "Every Time you dont finde any your answer ist a Simple NONE.\n"
+        # "You only extract outwritten Expressions! never (HH:mm)\n"
+        "You MUST NOT change (HH:mm) Expressions into outwritten Expressions!"
+        "Only extract outwritten expressions that are already in the query.\n"
+        "Be careful not to miss full expressions like 'drei viertel'."
+        # "You never convert (HH:mm) into outwritten Expressions!\n"
         "**GERMAN GRAMAR FOR TIME EXPRESSION**:\n\n"
+        "This table helps you recognize valid German time expressions, both in Nordwest/Südost and Mitte dialects:\n"
         "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte] is the structure of the tabele \n"
         f"{structured} \n"
-
-
         "**TASK**:\n\n"
         "search and extract all german words that are outwritten informal German clock-time-expressions from the QUERY.\n"
         "finde the exact words in the table!\n"
         # "Response them as they appears in the QUERY! (no explanation, no comments).\n"
         "before responding compare again with the Query!\n"
-        "before responding compare again with the Query and check if 'drei viertel' apears!\n"
-        # "before responding compare again with the Query and  double check if 'drei viertel' apears!\n"
-        "If there is no outwritten time expression, respond only with 'NONE'(no explanation, no comments).\n"
-        "If there is a numerical time expression, respond only with 'NONE'(no explanation, no comments).\n"
-        
+        # "before responding compare again with the Query and check if 'drei viertel' apears!\n"
+        "before responding compare again with the Query and  double check if 'drei viertel' apears!\n"
+        "If there is no outwritten time expression, respond with 'NONE'(no explanation, no comments).\n"
+        "If there is a numerical time expression, respond with 'NONE'(no explanation, no comments).\n"
         "**RULE FOR RESPONSE**:\n\n"
-        "Your Output must be the time expression from the Querry not a created one!\n" 
+        # "Your Output must be the time expression from the Querry not a created one!\n"
+        "Your Output must be the time expression from the Query or a simple 'NONE' !\n"
+        "REMEBER if the Time Entity is formalYOU MUST output A SIMPLE'NONE' and not an outwritten expression!"
+        # "REMEBER if the Time Entity is formal output A SIMPLE'NONE' by none informal ones!"
         # "Only extract NONE DIGITS and NONE numericals!\n"
-        "The Response MUST have the same word as it apears in the Query sentence no more no less!\n"
-        
-
+        # "The Response MUST have the same word as it apears in the Query sentence no more no less!\n"
         "**QUERY**: "
         f"{query}\n"
         # "Dont correct the output if no 'drei' or 'halb' appear at all!\n"
@@ -235,6 +239,110 @@ def time_informal_extraction(state: MessagesState, llm):
     #     "If there is no outwritten time expression, respond with 'NONE'.\n"
     #     "If there is a numerical time expression, respond with 'NONE'.\n"
     # )
+
+    # alles extractions klappen ausser die mit (HH:mm) TOP!!
+    # extract_time_prompt = (
+    #     "**ROLE**:\n\n"
+    #     "You are an expert for formal and informal German expressions of time.\n"
+    #     "You are focused on identifying only informal, outwritten time expressions — no numeric or HH:mm expressions are allowed.\n"
+    #     "You always write down the found expression in one line.\n"
+    #     "Be careful not to miss full expressions like 'drei viertel'.\n"
+
+    #     "**DATA STRUCTURE**:\n\n"
+    #     "Below is a reference table. It contains all valid informal German time expressions in two regional variants:\n\n"
+    #     "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte]\n\n"
+    #     f"{structured} \n\n"
+
+    #     # "**RULES**:\n\n"
+    #     # "- You ONLY extract time expressions if the words appear exactly as listed in the table.\n"
+    #     # "- The response must contain the exact same wording as it appears in the query — no rewriting or paraphrasing.\n"
+    #     # "- If an expression is preceded by a word like 'um', 'gegen', or 'so gegen', ignore this prefix when comparing.\n"
+    #     # "- However, your output must still match exactly what was in the query (excluding the prefix).\n"
+    #     # "- You MUST NOT generate or assume time expressions — no creative interpretations.\n"
+    #     # "- If no outwritten time expression is found, or only numeric/digit time is present, respond only with:\n"
+    #     # "  NONE (no explanation, no comments).\n"
+    #     # "- Only extract informal, outwritten time expressions from the query.\n"
+    #     # "- Expressions like '13:00 Uhr', '13 Uhr', or any other numerical (HH:mm) time must be ignored.\n"
+    #     # "- If the query contains only numerical times or no informal time at all, respond with:\n"
+    #     # "  NONE (no explanation, no comments).\n"
+    #     "**RULES**:\n\n"
+    #     "- You ONLY extract time expressions if the words appear exactly as listed in the table.\n"
+    #     "- The response must contain the exact same wording as it appears in the query — no rewriting or paraphrasing.\n"
+    #     "- If an expression is preceded by words like 'um', 'gegen', or 'so gegen', ignore the prefix when comparing.\n"
+    #     "- However, your output must still match exactly what appears in the query (minus the prefix).\n"
+    #     "- You MUST NOT generate or assume time expressions — no creative interpretations.\n"
+    #     "- Only extract informal, outwritten time expressions from the query.\n"
+    #     "- Expressions like um '13:00 Uhr', um '13 Uhr', or any other numerical (HH:mm) time must be ignored.\n"
+    #     "- You never convert HH:mm into outwritten expressions!\n"
+    #     "- If no outwritten time expression is found, or only numeric time is present, respond only with:\n"
+    #     "  NONE (no explanation, no comments).\n"
+
+    #     "**TASK**:\n\n"
+    #     "Search the QUERY below for informal, outwritten German time expressions.\n"
+    #     "Match only expressions found in the table above.\n"
+    #     "Respond with the exact phrase as it appeared in the QUERY.\n"
+    #     "If no match is found, respond with 'NONE'.\n\n"
+
+    #     "**QUERY**:\n"
+    #     f"{query}"
+    # )
+
+    extract_time_prompt = (
+        "**ROLE**:\n\n"
+        "You are a German expert for formal and informal expressions of time.\n"
+        "Your job is to identify outwritten, informal German time expressions (like 'viertel drei', 'halb vier', 'drei viertel fünf').\n"
+        "You always return your result in one line without explanation.\n"
+        "Every time you do not find any such expression, your answer must be a simple 'NONE'.\n"
+        "You MUST NOT change or rephrase any expression from the query.\n"
+        "You MUST NOT change numerical expressions (e.g. '13:00', '14 Uhr') into informal ones.\n"
+         "Be careful not to miss full expressions like 'drei viertel'.\n"
+
+         "You MUST NOT change or convert 'halb' into 'viertel' or 'drei viertel' or something similar.\n"
+         "You MUST extract 'halb' as multi-expression .\n"
+
+        # ❗ Wichtige Regel: Keine Umwandlung von (HH:mm) in ausgeschriebene Form
+        "You MUST NOT change or convert (HH:mm) or any formal time expressions into outwritten versions.\n"
+        
+        # ❗ Keine Autokorrektur – bleibe exakt bei der Benutzereingabe
+        "You MUST NOT correct or rephrase time expressions. Only extract them exactly as they appear in the query.\n"
+
+        # ❗ Erkenne und extrahiere bestimmte Begriffe 1:1
+        "Before responding, explicitly check whether 'drei viertel', 'halb', or 'viertel' appear in the query. "
+        "If so, you MUST return the full phrase exactly as written in the query — not a part of it, not a similar one.\n"
+
+        # ❗ Abgleich mit Tabelle ist Pflicht
+        "Only return a time expression if and only if the exact same phrase appears in the QUERY and is also present in the table below.\n"
+        "If there is only a partial or similar match, respond with 'NONE'.\n"
+
+        "**GERMAN GRAMMAR FOR TIME EXPRESSION**:\n\n"
+        "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte] is the structure of the table:\n"
+        f"{structured} \n"
+       
+        "**TASK**:\n\n"
+        "Search and extract all informal German time expressions that are outwritten using words.\n"
+        "Find only the exact expressions that appear in the table and match them exactly as they appear in the query.\n"
+        "Compare again before answering, and double-check whether expressions like 'drei viertel' are present.\n"
+        "Be careful not to miss full expressions like 'drei viertel'.\n"
+        "Be careful not to miss full expressions like 'halb'.\n"
+        # Wichtig: Wenn es eine formelle Zeitangabe (z. B. 13:00 Uhr) gibt, soll diese mit 'NONE' beantwortet werden
+        "If there is any formal time expression (e.g., '13:00', '14 Uhr', '13 Uhr'), respond with 'NONE'.\n"
+        "If there is no time expression at all, respond with 'NONE'.\n"
+        
+        "**RULES FOR RESPONSE**:\n\n"
+        "- Output must be exactly the same wording as it appears in the query — no more, no less.\n"
+        "- Only outwritten time expressions are valid.\n"
+        "- Do NOT extract numerical or digit-based times (e.g. '13:00', '14 Uhr').\n"
+        "- If no informal time is found, respond with 'NONE'.\n"
+        "- If a formal time expression (e.g. '13:00', '14 Uhr') appears, respond with 'NONE'.\n"
+        
+        "- Pay special attention to expressions like 'halb', 'viertel', 'drei viertel', and ensure they are matched exactly as they appear, without modification.\n"  # Besonders auf Ausdrücke wie 'halb', 'viertel', 'drei viertel' achten, ohne sie zu verändern
+        "- Double-check that expressions like 'halb zwei' remain unmodified, as they are distinct from 'viertel'.\n"  # Sicherstellen, dass 'halb zwei' nicht zu 'viertel zwei' geändert wird
+        "- Before responding, check explicitly whether 'drei viertel', 'halb', or 'viertel' appear in the query. If so, do not replace or change them in any way."
+
+        "**QUERY**:\n"
+        f"{query}"
+    )
+
     start_time = time.time()
     response = llm.create_chat_completion(
         messages=[
@@ -275,7 +383,7 @@ def time_converter(state: MessagesState, llm):
     # Der zeitausdruck
     time_phrase_lower = state["messages"][-1].content.lower()
     # time_phrase = regex.sub(r'^um\s+', '', time_phrase_lower)
-    time_phrase = regex.sub(r'^"?um\s+', '', time_phrase_lower).strip('"')
+    time_phrase = regex.sub(r'^"?um\s+', "", time_phrase_lower).strip('"')
     # Der Hilfsquery um die Anfrage so präzise wie möglich zu halten!
     query = f"Was ist die Uhrzeit '{time_phrase}' als (HH:mm)!"
 
@@ -572,7 +680,7 @@ llm = get_repo_rag_model(model_key)
 # query = "Pizza Hut um viertel nach zwei."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb elf ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb drei ich muss vom Hertha Spiel zum Kudamm."
-# query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
+query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb zehn ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel acht ich muss vom Hertha Spiel zum Kudamm."
@@ -583,20 +691,20 @@ llm = get_repo_rag_model(model_key)
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach zwei? Ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag was frei vom Olympia Satdium um viertel nach neun ?"
-query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
+# query = "Wie buche ich den Bürgerbus am 13. September um 07:00 Uhr von Aschbach - Staatsstraße nach Oberwertach?"
 # response = run_pipeline(query, llm, ["time"])
 
 # Failed aber json in time JSON RAG
-query = (
-    "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
-)
+# query = (
+#     "Wie buche ich den Bürgerbus für eine Fahrt vom Elendskirchen nach Westerham - Mitfahrbankerl Edeka Maruhn am 15. Oktober um 16:00 Uhr?",
+# )
 # query="Ich möchte um 12 am Montag von München nach Berlin fahren."
 # query = "Ich möchte am 10. Juli um 16:00 Uhr von Berlin Hauptbahnhof nach Potsdamer Platz fahren."
-query="Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen."
+# query = "Ich möchte eine Fahrt von Goetheplatz nach Schloss Sanssouci um 13:00 Uhr am 5. Mai buchen."
 
 
 response = run_pipeline(
-    query, llm, ["time_extract", "time_convert", "time_replace", "date","json"]
+    query, llm, ["time_extract", "time_convert", "time_replace", "date", "json"]
 )
 print("response")
 print(response)
