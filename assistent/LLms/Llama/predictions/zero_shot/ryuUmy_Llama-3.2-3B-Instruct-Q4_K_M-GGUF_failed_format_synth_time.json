@@ -1,0 +1,10 @@
+[
+    {
+        "query": "Kann ich den Bürgerbus für eine Fahrt von Jägerstraße nach Krögling um 09:00 Uhr am 1. September buchen?",
+        "failed_format": "```\n{\n  \"from\": \"Jägerstraße\",\n  \"to\": \"Krogling\",\n  \"date\": \"1. September\",\n  \"time\": \"09:00 Uhr\"\n}\n```"
+    },
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "failed_format": "from: Hauptstraße\nto: Gärtnerplatz\ndate: 15. März\ntime: 14:30"
+    }
+]

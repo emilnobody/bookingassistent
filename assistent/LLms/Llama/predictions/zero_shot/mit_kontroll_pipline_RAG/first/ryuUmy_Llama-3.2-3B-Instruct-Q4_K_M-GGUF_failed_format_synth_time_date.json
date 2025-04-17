@@ -1,0 +1,6 @@
+[
+    {
+        "query": "Kann ich eine Fahrt von Hauptstraße nach Gärtnerplatz um 14:30 Uhr am 15. März buchen?",
+        "failed_format": "from: Hauptstraße\nto: Gärtnerplatz\ndate: 15. März\ntime: 14:30"
+    }
+]

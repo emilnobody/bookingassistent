@@ -23,12 +23,12 @@ with open(ground_truth_file, "r", encoding="utf-8") as file:
 llm_prediction_folder = os.path.normpath(
     os.path.join(config.LLAMA_FOLDER, "predictions", "zero_shot")
 )
+run_rag_predictions(ground_truth_files[0],llm_prediction_folder,model_key,llm)
 
 # Für jeden groundtruth
-for groundtruth_file in ground_truth_files:
-    print("hi")
-    groundtruth_infos= groundtruth_file[1]
-    run_rag_predictions(ground_truth_files[0],llm_prediction_folder,model_key,llm)
+# for groundtruth_file in ground_truth_files:
+#     groundtruth_infos= groundtruth_file[1]
+#     run_rag_predictions(ground_truth_files[0],llm_prediction_folder,model_key,llm)
 # für jeden file einen run durchführen 
 
 

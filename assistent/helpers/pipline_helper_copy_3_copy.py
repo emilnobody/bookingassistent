@@ -134,34 +134,61 @@ def time_proofreader(state: MessagesState, llm):
 
 def time_informal_extraction(state: MessagesState, llm):
     url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
+    # url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
     result = extract_website_content(url)
     prompt_time_knowledge = result.get("results")[0].get("raw_content")
+    pattern = r"((?:\d{2}:\d{2} ){2}(?:[^\d\s]+(?: [^\d\s]+)*))(?= \d{2}:\d{2}|\Z)"
+    replacement = r"\1\n\n"
+    structured = regex.sub(pattern, replacement, prompt_time_knowledge)
     query = state["messages"][-1].content
+    # hat zuletzt noch funktioniert ausser drei viertel zehn LAST STAND
     extract_time_prompt = (
-        "You are a NEE-LLM for outwritten german clock time expressions."
-        "START of Knowledgebase\n\n"
-        "the Knowledgebase for reference not the message:\n"
-        f"{prompt_time_knowledge}\n"
-        "ENDE of Knowledgebase\n\n"
-        "TASK:\n"
-        "Extract all outwirtten numbers"
-        "**Rules:**\n"
-        "Only extract NONE DIGITS and NONE numericals!\n"
-        "If there is no outwritten time expression, respond with 'NONE'.\n"
-        "If there is a numerical time expression, respond with 'NONE'.\n"
-        "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text.\n"
+        "extract all german words that are outwritten informal German clock time expressions."
+        "Respond with all of them! (no explanation, no comments)."
+        "always double check if after 'drei' comes 'Viertel' or 'viertel'correct the output!\n"
+        "Dont correct the output if no 'drei' appear at all!\n"
+        "Do not add any WORDS to the expression."
+        # "The output MUST be WORDS."
+        # "Only extract NONE DIGITS and NONE numericals!\n"
+        # "Respond only with them alone. (no explanation, no context)."
+        # "WE ignore wrong grammar!"
+        # "I forbidd you to change the grammar"
+        "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text."
+        "REMBER ONLY 'extract all german words that are outwritten informal German clock time expressions.' ."
     )
     # extract_time_prompt = (
     #     "You are a NEE-LLM for outwritten german clock time expressions."
+    #     "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte] is the structure of the tabele "
     #     "START of Knowledgebase\n\n"
     #     "the Knowledgebase for reference not the message:\n"
+    #     # f"{prompt_time_knowledge}\n"
+    #     f"{structured}\n"
+    #     "ENDE of Knowledgebase\n\n"
+    #     "Task:\n"
+    #     "look if in the message is the [Sprechweise Nord/Süd] or [Sprechweise Mitte] expression and extract it."
+    #     "Double Check if the message contains drei  followed by 'viertel' correct your mistake!"
+    #     # "extract all outwritten informal expression from the Message!\n"
+    #     # "Don't"
+    #     "**Rules:**\n"
+    #     "Only extract NONE DIGITS and NONE numericals!\n"
+    #     "always check if after 'drei' comes 'Viertel' or 'viertel'correct the output!"
+    #     "If there is no outwritten time expression, respond with 'NONE'.\n"
+    #     "If there is a numerical time expression, respond with 'NONE'.\n"
+    #     "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text.\n"
+    # )
+    # extract_time_prompt = (
+    #     "You are a NEE-LLM for outwritten german clock time expressions."
+    #     "START of Knowledgebase\n\n"
+    #     "the Knowledgebase:\n"
     #     f"{prompt_time_knowledge}\n"
     #     "ENDE of Knowledgebase\n\n"
     #     "**Rules:**\n"
     #     "Only extract NONE DIGITS and NONE numericals!\n"
+    #     "Do not interpret.\n"
     #     "If there is no outwritten time expression, respond with 'NONE'.\n"
     #     "If there is a numerical time expression, respond with 'NONE'.\n"
-    #     "Do not add 'Es ist' or 'um' or 'Uhr:', or any other words. Just give the time expression exactly as it appears in the text.\n"
+    #     # "Keep the casing (lowercase, uppercase, etc.)from the German sentence below.\n"
+
     # )
     # extract_time_prompt = (
     #     "You are a NEE-LLM."
@@ -190,7 +217,7 @@ def time_informal_extraction(state: MessagesState, llm):
             {"role": "user", "content": query},
         ],
         max_tokens=3000,
-        temperature=0.7,
+        temperature=0.5,
         top_p=0.1,
         top_k=20,
     )
@@ -211,48 +238,86 @@ def should_continue_time_flow(state: MessagesState):
 
 
 def time_converter(state: MessagesState, llm):
-    url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
+    # url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
+    url = "https://www.dreiviertelzwoelf.com/wp/wp-content/uploads/2012/07/uhrzeittabelle.pdf"
     result = extract_website_content(url)
     prompt_time_knowledge = result.get("results")[0].get("raw_content")
-    time_phrase = state["messages"][-1].content
+    pattern = r"((?:\d{2}:\d{2} ){2}(?:[^\d\s]+(?: [^\d\s]+)*))(?= \d{2}:\d{2}|\Z)"
+    replacement = r"\1\n\n"
+    structured = regex.sub(pattern, replacement, prompt_time_knowledge)
 
-    # convert_time_prompt = (
-    #     # f"You are a German time conversion expert.\n\n"
-    #     # "START of Knowledgebase\n\n"
-    #     # "this is just the Knowledgebase not the message:\n"
-    #     # f"{prompt_time_knowledge}\n"
-    #     # "ENDE of Knowledgebase\n\n"
-    #     f"Use the following rules:\n\n{prompt_time_knowledge}\n\n"
-    #     "Change the following informal German time expression into the corresponding numerical p.m. format (e.g. 'HH:MM').\n"
-    #     # "Convert the following informal German time expression into the corresponding numerical format (e.g. 'HH:MM').\n"
-    #     # "If the expression does not include 'Nachmittag' or 'nachmittag', assume it refers to the morning (Vormittag), and interpret the hour between 1 and 12 accordingly. Do not assume a value higher than 12."
-    #     # "If the informal expression contains 'vor', 'halb', or 'drei viertel', then reduce the hour by 1 when converting to a 24-hour time format."
-    #     "Only convert into time value higher then 12 if 'Nachmittag' ignore case, is found. "
-    #     f"informal expression:'{time_phrase}\n"
-    #     "Respond ONLY with the time (no explanation, no context)."
-    # )
+    # raw_str=prompt_time_knowledge
+    # raw_text = result["results"][0]["raw_content"]
 
-    repsone_None = "juste reponse 'NONE' nothing else!"
+    # # Startpunkt: "Grammatik\nUhrzeit: informell (2)"
+    # start = raw_text.find("Grammatik\nUhrzeit: informell (2)")
+
+    # # Endpunkt: "Footer"
+    # end = raw_text.find("\xa0\nWeiter")
+
+    # # Extrahiere den relevanten Abschnitt
+    # neu = raw_text[start:end].strip()
+
+    time_phrase = state["messages"][-1].content.lower()
+    # time_phrase = state["messages"][-1].content
+
+    # time_phrase = state["messages"][-1].content.upper()
+    # query = "wie sieht halb zwei als numerischer (HH:mm) laut deines Wissen aus?"
+    # query = "wie sieht halb eins als (HH:MM)  deines Wissen nach aus?"
+    # query = "wie sieht halb zwei als (HH:MM)  deines Wissen nach aus?"
+    # query = "wie sieht halb drei als (HH:MM)  deines Wissen nach aus?"
+    # query = "wie sieht halb vier als (HH:MM)  deines Wissen nach aus?"
+    # query = "wie sieht halb fünf als (HH:MM)  deines Wissen nach aus?"
+    # query = "wie sieht halb sechs als numersiche(HH:MM) Darstelung aus kurze Antwort bitte?"
+    # query = "wie sieht halb sieben als (HH:MM)  deines Wissen nach aus?"
+    # query = "wie sieht halb zwei als (HH:MM) laut deines Wissen aus?"
+    # query = "wie sieht halb neun als (HH:MM) laut der deutschen Regel aus?"
+    # query = "wie wird halb neun als (HH:MM) dargestellt wenn man sich an die 'RULES' hält?"
+    # query = "wie sieht drei viertel sechs als (HH:MM) laut deines Wissen aus"
+    # query = "Wenn die Uhr drei viertel sechs zeigt, kannst du das in (HH:MM) angeben laut deines Wissen"
+    # query = f"Wenn die Uhr {time_phrase} zeigt, kannst du das in (HH:MM) angeben laut deines Wissen"
+    # query = f"Wenn die Uhr {time_phrase} zeigt, wie wird das laut deutscher Zeitangabe in (HH:mm) angezeigt?"
+    # query = f"die Uhr zeigt {time_phrase}!"
+    # query = "wie sieht drei viertel sechs als (HH:MM) In einigen Teilen Deutschlands aus ?"
+    # query = f"wie sieht {time_phrase} als (HH:MM) laut deines Wissen aus?"
+
+    query = f"Was ist die Uhrzeit '{time_phrase}' als (HH:mm)!"
+    # query = f"Konvertiere nach den deutsche Regeln die Uhrzeit {time_phrase} als (HH:mm)!"
+    # query = f"Finde {time_phrase} in der Tabelle mit den beiden representationen,\n"
+    # query = f"search {time_phrase} in the table for the 1:1 phrase,\n"
+    # Alles mit halb geht ausser halb zwei
     convert_time_prompt = (
-        f"You are a German time conversion expert.\n\n"
+        # f"You are a German language teacher.\n\n"
         "START of Knowledgebase\n\n"
-        "this is just the Knowledgebase not the message:\n"
-        f"{prompt_time_knowledge}\n"
-        "ENDE of Knowledgebase\n\n"
-        # "Your task is to convert the time.\n\n"
-        # "Change the following informal German time expression into the corresponding morning clock digit representation (e.g. 'HH:MM').\n"
-        "read the expression and write the time NUMBER as clock time representative.\n"
-        "**Rules:**\n"
-        "- Assume all time expressions are in the morning 0-12h frame.\n"
-        "- We take the small number representative as long as no 'Nachmittag' or 'nachmittag' is found.\n"
-        "- Do not add 'Es ist' or 'um' or 'Uhr:', or any other words.\n"
-        "- Do not convert outwritten expression into outwirtten expression! "
-        # "- If the informal expression contains 'vor', 'halb', or 'drei viertel', then reduce the hour by 1.\n"
-        # "- Only add 12 to the hour if 'Nachmittag' or similar is explicitly mentioned (afternoon format)."
-        # "- Ignore case differences when searching.\n\n"
-        f"Informal expression:\n'{time_phrase}'\n"
-        "Respond ONLY with the converted time (no explanation, no context)."
+        # "**START of RULES**\n\n"
+        # "this are your RULES :\n"
+        # "You wrote down this explanation and Rules for question ansewring how to interpret\n"
+        # f"{prompt_time_knowledge}\n"
+        f"{structured}\n"
+        "**ENDE of RULES**\n\n"
+        # "Based on the RULES you will know if the keywords indicates for a 'informell' expression and repsonse the correct (hh:mm).\n"
+        # "Based on your RULES you must interpret correctly into (HH:mm) representation.\n"
+        # " interpret correctly into (HH:mm) representation.\n"
+        # "if 'nach' is not part don't apply it to the logic!"
+        # "do not use expressions that are not in the Question!"
+        # "If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1.\n"
+        # "YOU MUST RESPONSE WITH THE MORNING REPRESENTATION NOTHING ELSE!"
+        # f"Informal expression:\n{query}\n"
+        # "finde die Uhrzeit in der Tabelle und gib den geringeren numerischen Wert zurück es sei den Nachmittag wurde angegeben in der Frage!\n"
+        # "gebe die richtige Uhrzeit wieder.\n"
+        # "if you see 'drei Viertel' they mean the houre before with'viertel nach'."
+        "[digitale Zeit 1] [digitale Zeit 2] [Sprechweise Nord/Süd] [Sprechweise Mitte] is the structure of the tabele "
+        "always double check if after 'drei' comes 'Viertel' or 'viertel' correct the output!\n"
+        # "Always take the value of [digitale Zeit 2] only if somehow the text indicates afternoon take [digitale Zeit 1]."
+        "Respond ONLY with the resulting time (no explanation, no context)."
+        f"{query}\n"
+        # "Denke intern über die Bedeutung nach, gib aber **nur** das Endergebnis im Format HH:MM aus. "
+        # "Gehe Intern die richtige Rechnung noch einmal durch bevor du Antwortest."
+        # "Gehe Intern die richtige Lösung noch einmal durch bevor du Antwortest."
+        # "Gib mir nur das Ergebnis."
+        # "Respond ONLY with the resulting time (no explanation or comments)."
     )
+    # )
     message_prevous_extracted = state["messages"][-2].content
     message_prevous = state["messages"][-1].content
     if time_phrase == "NONE":
@@ -263,8 +328,9 @@ def time_converter(state: MessagesState, llm):
             {"role": "system", "content": convert_time_prompt},
             # {"role": "user", "content": state["messages"][-1].content},
         ],
-        max_tokens=3000,
-        temperature=0.5,
+        max_tokens=250,
+        # max_tokens=3000,
+        temperature=0.1,
         top_p=0.1,
         top_k=20,
     )
@@ -273,6 +339,60 @@ def time_converter(state: MessagesState, llm):
     print(f"This is the infernce_time needed for spellchecking {infernce_time}")
     response = response["choices"][0]["message"]["content"]
     return {"messages": response}
+
+
+# def time_converter(state: MessagesState, llm):
+#     url = "https://learngerman.dw.com/de/uhrzeit-informell-2/l-40443235/gr-40445046"
+#     result = extract_website_content(url)
+#     prompt_time_knowledge = result.get("results")[0].get("raw_content")
+#     raw_text = result["results"][0]["raw_content"]
+
+#     # Startpunkt: "Grammatik\nUhrzeit: informell (2)"
+#     start = raw_text.find("Grammatik\nUhrzeit: informell (2)")
+
+#     # Endpunkt: "Footer"
+#     end = raw_text.find("Footer")
+
+#     # Extrahiere den relevanten Abschnitt
+#     neu = raw_text[start:end].strip()
+
+#     time_phrase = state["messages"][-1].content
+#     # Alles mit halb geht ausser halb zwei
+#     convert_time_prompt = (
+#         f"You are a German time conversion expert.\n\n"
+#         "START of Knowledgebase\n\n"
+#         "this is just the Knowledgebase not the message:\n"
+#         # 'In German, "Halb X" means half an hour before X.\n'
+#         f"{neu}\n"
+#         "ENDE of Knowledgebase\n\n"
+#         "Your task is to interpret german informal time expressions into (HH:MM)."
+#         # "If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1.\n"
+#         "YOU MUST RESPONSE WITH THE MORNING REPRESENTATION NOTHING ELSE!"
+#         "If no specific time of day (morning/afternoon) is mentioned, assume the time refers to **morning (Vormittag) number** unless context suggests otherwise.\n"
+#         f"Informal expression:\n'{time_phrase}'\n"
+#         "Respond ONLY with the interprete time (no explanation, no context)."
+#     )
+#     message_prevous_extracted = state["messages"][-2].content
+#     message_prevous = state["messages"][-1].content
+#     if time_phrase == "NONE":
+#         return {"messages": response}
+#     start_time = time.time()
+#     response = llm.create_chat_completion(
+#         messages=[
+#             {"role": "system", "content": convert_time_prompt},
+#             # {"role": "user", "content": state["messages"][-1].content},
+#         ],
+#         max_tokens=250,
+#         # max_tokens=3000,
+#         temperature=0.7,
+#         top_p=0.1,
+#         top_k=20,
+#     )
+#     end_time = time.time()
+#     infernce_time = end_time - start_time
+#     print(f"This is the infernce_time needed for spellchecking {infernce_time}")
+#     response = response["choices"][0]["message"]["content"]
+#     return {"messages": response}
 
 
 def time_reducer(state: MessagesState, llm):
@@ -285,18 +405,35 @@ def time_reducer(state: MessagesState, llm):
     new_time = state["messages"][-1].content
 
     reduce_time_prompt = (
-        "Your task is to calculate the time.\n\n"
+        "START of Knowledgebase\n\n"
+        "we have (HH:MM) the command reduce by 1 hour  stands vor the HH part -> 10 reduce by 1 would be 9 in the HH Part."
+        "this is just the Knowledgebase not the message:\n"
+        "ENDE of Knowledgebase\n\n"
+        "If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1. (e.g. 5:30 would be reduced to 4:30) \n"
+        "If the 'informal expression' contains excatly 'nach', or 'Viertel', then DO NOT reduce the time by 1 hour and the new time will STAY the old time(e.g. 10:15 will stay 10:15).\n"
+        # "Your task is to calculate the time.\n\n"
+        "Your task is to reduce the time under given rules.\n\n"
         "**Rules:**\n"
-        # "'Drei Viertel' and 'Viertel' are NOT THE SAME!\n"
-        # "- If the 'informal expression' contains 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the time by 1 hour.\n"
-        "- If the 'informal expression' contains 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1. (e.g. 5:30 would be reduced to 4:30) \n"
-        "- If the 'informal expression' contains 'nach', or 'Viertel', then DO NOT reduce the time by 1 hour and the new time will STAY the old time(e.g. 10:15 will stay 10:15).\n"
         # "- Ignore case differences when searching for the informal time expression in the sentence.\n"
-        "- Only calculate the value of 'time to calculate', NOT 'informal expression'.\n"
-        f"informal expression: '{old_time_informal}\n"
+        "Only reduce  based on the  value of 'time to calculate:', NOT not interpret or convert based on 'informal expression'.\n"
+        # f"informal expression: '{old_time_informal}\n"
         f"time to calculate: {new_time}.\n"
-        "Only Respond after calculation with the time (no explanation, no context)."
+        "Only Respond with the reduced time after reducing (no explanation, no context)."
+        # "Only Respond after calculation with the time (no explanation, no context)."
     )
+    # reduce_time_prompt = (
+    #     "Your task is to calculate the time.\n\n"
+    #     "**Rules:**\n"
+    #     # "'Drei Viertel' and 'Viertel' are NOT THE SAME!\n"
+    #     # "- If the 'informal expression' contains 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the time by 1 hour.\n"
+    #     "- If the 'informal expression' contains excatly 'vor', or 'Halb', or 'Drei Viertel', then you MUST reduce the hour by 1. (e.g. 5:30 would be reduced to 4:30) \n"
+    #     "- If the 'informal expression' contains excatly 'nach', or 'Viertel', then DO NOT reduce the time by 1 hour and the new time will STAY the old time(e.g. 10:15 will stay 10:15).\n"
+    #     # "- Ignore case differences when searching for the informal time expression in the sentence.\n"
+    #     "- Only calculate the based on the  value of 'time to calculate:', NOT not interpret or convert based on 'informal expression'.\n"
+    #     f"informal expression: '{old_time_informal}\n"
+    #     f"time to calculate: {new_time}.\n"
+    #     "Only Respond after calculation with the time (no explanation, no context)."
+    # )
     start_time = time.time()
     response = llm.create_chat_completion(
         messages=[
@@ -370,7 +507,6 @@ def date_proofreader(state: MessagesState, llm):
         "You are a German meticulous 'Proofreading Expert' for the expressions of dates.\n\n"
         "The knowledge for wich date we have:\n\n"
         f"Today is {current_weekday} the {current_date}, weekday index: {weekday_index}\n\n"
-        
         # "Your task is to check the Message for incomplete or informal expressions of a certain date including weekkday expression and replace them with the offical ISO 8601 date format .\n\n"
         "Your task is to identify and replace any weekday or informal or relative or incomplete or outwritten expressions of dates with their correct and complete ISO 8601 format (YYYY-MM-DD), based on today's date.\n"
         # "Your task is to detect any vague, relative or weekday-only date references and replace them with the corresponding exact date in ISO 8601 format (YYYY-MM-DD), based on today's date.\n"
@@ -637,7 +773,7 @@ def run_pipeline(query_profread: str, llm, stages: list[str]):
     start = time.time()
     response = app.invoke(
         {"messages": [HumanMessage(content=query_profread)]},
-        config={"configurable": {"thread_id": "10"}},
+        config={"configurable": {"thread_id": "1111"}},
     )
     end = time.time()
     duration = end - start
@@ -656,9 +792,12 @@ llm = get_repo_rag_model(model_key)
 query = "Ist Samstag  was frei vom Olympia Stadium um viertel nach neun ich muss vom Hertha Spiel zum Kudamm."
 # query = "Pizza Hut um viertel nach zwei."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb elf ich muss vom Hertha Spiel zum Kudamm."
+# query = "Ist Samstag  was frei vom Olympia Stadium um halb drei ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb zwei ich muss vom Hertha Spiel zum Kudamm."
+# query = "Ist Samstag  was frei vom Olympia Stadium um halb zehn ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um halb sieben ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel acht ich muss vom Hertha Spiel zum Kudamm."
+
 # query = "Ist Samstag  was frei vom Olympia Stadium um drei viertel zehn ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel sieben ich muss vom Hertha Spiel zum Kudamm."
 # query = "Ist Samstag  was frei vom Olympia Stadium um viertel fünf ich muss vom Hertha Spiel zum Kudamm."

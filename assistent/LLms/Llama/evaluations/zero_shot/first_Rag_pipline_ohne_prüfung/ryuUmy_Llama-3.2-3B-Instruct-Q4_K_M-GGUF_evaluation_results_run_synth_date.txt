@@ -1,28 +1,24 @@
 === Kategorie-Ergebnisse ===
 
 Kategorie: from
-Precision: 0.95, Recall: 0.95, F1-Score: 0.95
+Precision: 0.89, Recall: 0.94, F1-Score: 0.92
 Fehler:
-  - FP: 'Samstag, 2025-04-18' statt 'Olympia Stadium' für 'from'
+  - FP: '2025-04-14 12:00:00' statt 'München' für 'from'
+  - FP: 'Samstag, 2025-04-12, 20:15' statt 'Olympia Stadium' für 'from'
   - FN: 'Hauptstraße' nicht extrahiert für 'from'
 
 Kategorie: to
-Precision: 0.84, Recall: 0.94, F1-Score: 0.89
+Precision: 0.89, Recall: 0.94, F1-Score: 0.92
 Fehler:
   - FP: 'Krogling' statt 'Krögling' für 'to'
-  - FP: 'um viertel nach neun' statt 'Kudamm' für 'to'
   - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
   - FN: 'Gärtnerplatz' nicht extrahiert für 'to'
 
 Kategorie: date
-Precision: 0.33, Recall: 0.75, F1-Score: 0.46
+Precision: 0.53, Recall: 0.91, F1-Score: 0.67
 Fehler:
-  - FP: '2025-04-16' statt '2025-04-15' für 'date'
-  - FP: '2025-04-18' statt '2025-04-11' für 'date'
-  - FP: '2025-04-20' statt '2025-04-14' für 'date'
-  - FP: '2025-04-18' statt '2025-04-12' für 'date'
+  - FP: '2025-04-14' statt '2025-04-15' für 'date'
   - FP: '18. September' statt '2025-09-18' für 'date'
-  - FN: '2025-10-15' nicht extrahiert für 'date'
   - FP: '2024-10-22' statt '2025-10-22' für 'date'
   - FP: '13. September' statt '2025-09-13' für 'date'
   - FN: '2025-03-15' nicht extrahiert für 'date'
@@ -35,8 +31,8 @@ Fehler:
 Kategorie: time
 Precision: 0.72, Recall: 0.87, F1-Score: 0.79
 Fehler:
-  - FP: '12 am' statt '12:00 Uhr' für 'time'
-  - FP: 'um viertel nach neun' statt 'viertel nach neun' für 'time'
+  - FP: '12:00:00' statt '12:00 Uhr' für 'time'
+  - FP: '20:15' statt 'viertel nach neun' für 'time'
   - FN: '16:00 Uhr' nicht extrahiert für 'time'
   - FP: '11:45' statt '11:45 Uhr' für 'time'
   - FN: '14:30 Uhr' nicht extrahiert für 'time'
@@ -44,5 +40,5 @@ Fehler:
   - FP: '10:00' statt '10:00 Uhr' für 'time'
 
 === Gesamtergebnisse ===
-Micro-Precision: 0.72, Micro-Recall: 0.90, Micro-F1-Score: 0.80
-Macro-Precision: 0.71, Macro-Recall: 0.88, Macro-F1-Score: 0.77
+Micro-Precision: 0.76, Micro-Recall: 0.92, Micro-F1-Score: 0.83
+Macro-Precision: 0.76, Macro-Recall: 0.92, Macro-F1-Score: 0.82

@@ -1,0 +1,50 @@
+=== Kategorie-Ergebnisse ===
+
+Kategorie: from
+Precision: 0.95, Recall: 0.95, F1-Score: 0.95
+Fehler:
+  - FP: '2025-04-12 09:20' statt 'Olympia Stadium' für 'from'
+  - FN: 'Hauptstraße' nicht extrahiert für 'from'
+
+Kategorie: to
+Precision: 0.84, Recall: 0.94, F1-Score: 0.89
+Fehler:
+  - FP: 'Krogling' statt 'Krögling' für 'to'
+  - FP: '2025-04-12 09:40' statt 'Kudamm' für 'to'
+  - FP: 'Westerham' statt 'Westerham - Mitfahrbankerl Edeka Maruhn' für 'to'
+  - FN: 'Gärtnerplatz' nicht extrahiert für 'to'
+
+Kategorie: date
+Precision: 0.47, Recall: 0.90, F1-Score: 0.62
+Fehler:
+  - FP: '2025-04-14' statt '2025-04-15' für 'date'
+  - FP: 'Freitag' statt '2025-04-11' für 'date'
+  - FP: '18. September' statt '2025-09-18' für 'date'
+  - FP: '15. Oktober 2025' statt '2025-10-15' für 'date'
+  - FP: '2024-10-22' statt '2025-10-22' für 'date'
+  - FP: '13. September' statt '2025-09-13' für 'date'
+  - FN: '2025-03-15' nicht extrahiert für 'date'
+  - FP: '18. Juni' statt '2025-06-18' für 'date'
+  - FP: '12. Oktober' statt '2025-10-12' für 'date'
+  - FP: '20. Januar' statt '2025-01-22' für 'date'
+  - FP: '30. November' statt '2025-11-30' für 'date'
+
+Kategorie: time
+Precision: 0.42, Recall: 0.89, F1-Score: 0.57
+Fehler:
+  - FP: 'um zwanzig vor sechs' statt '07:45 Uhr' für 'time'
+  - FP: '09:20' statt '09:15 Uhr' für 'time'
+  - FP: '20:06 Uhr' statt '16:00 Uhr' für 'time'
+  - FP: '20:30' statt '12:30 Uhr' für 'time'
+  - FP: '10:20' statt '11:45 Uhr' für 'time'
+  - FN: '14:30 Uhr' nicht extrahiert für 'time'
+  - FP: '16 Uhr' statt '16:00 Uhr' für 'time'
+  - FP: '08:00' statt '08:00 Uhr' für 'time'
+  - FP: '12:25' statt '20:45 Uhr' für 'time'
+  - FP: '10:00' statt '10:00 Uhr' für 'time'
+  - FP: '15:00 vor 5 Uhr' statt '15:45 Uhr' für 'time'
+  - FP: '13:00' statt '13:00 Uhr' für 'time'
+
+=== Gesamtergebnisse ===
+Micro-Precision: 0.67, Micro-Recall: 0.93, Micro-F1-Score: 0.78
+Macro-Precision: 0.67, Macro-Recall: 0.92, Macro-F1-Score: 0.76
